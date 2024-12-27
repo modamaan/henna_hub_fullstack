@@ -7,4 +7,4 @@ Welcome to Henna Haven, an eCommerce platform dedicated to providing the highest
 First, clone the repository:
 
 ```bash
-[git clone https://github.com/yourusername/hennahaven.git](https://github.com/modamaan/henna_hub_fullstack.git)
+[git clone (https://github.com/modamaan/henna_hub_fullstack.git)

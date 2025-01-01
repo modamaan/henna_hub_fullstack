@@ -3,18 +3,16 @@ name: Deploy Node Application
 on:
   push:
     branches:
-      - main
+      - mern-ec2-docker
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v2
-      - name: Debug Docker Login
-        run: echo "DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}, DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}"
+        uses: actions/checkout@v4
       - name: Login to docker hub
-        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{secrets.DOCKER_PASSWORD}}
       - name: Build Docker Image
         run: docker build -t mohamedamaan319/aws-fullstackhenna .
       - name: Publish Image to docker hub
@@ -26,7 +24,5 @@ jobs:
     steps:
       - name: Pull image from docker hub
         run: docker pull mohamedamaan319/aws-fullstackhenna:latest
-      - name: Delete old container
-        run: docker rm -f nodejs-app-container
       - name: Run Docker Container
         run: docker run -d -p 8080:8080 --name nodejs-app-container -e MONGODB_PASSWORD='${{ secrets.MONGODB_PASSWORD }}' mohamedamaan319/aws-fullstackhenna:latest

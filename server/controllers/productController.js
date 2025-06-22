@@ -6,7 +6,7 @@ import offerModel from "../models/offerModel.js";
 
 export const createProductController = async (req, res) => {
     try {
-        const { name, slug, description, price, quantity, category, shipping } =
+        const { name, slug, description, price, quantity, category, shipping, offer } =
             req.fields;
         const { photo } = req.files;
         // validation
@@ -49,9 +49,9 @@ export const createProductController = async (req, res) => {
 };
 
 // create offer product controller
-export const createOfferProductController = async(req,res)=>{
+export const createOfferProductController = async (req, res) => {
     try {
-        const { name, slug, description, price, quantity, category, shipping,offer } =
+        const { name, slug, description, price, quantity, category, shipping, offer } =
             req.fields;
         const { photo } = req.files;
         // validation
@@ -122,18 +122,27 @@ export const getProductController = async (req, res) => {
 };
 
 // get offer product controller
-export const getOfferProductController = async(req,res)=>{
+export const getOfferProductController = async (req, res) => {
     try {
-        const offerProducts = await offerModel
-            .findOne({})
-            .populate("category")
-            .select("-photo")
+        // Find one product that has an offer greater than 0
+        const offerProduct = await productModel.findOne({ offer: { $gt: 0 } })
+            .populate("category", "name") // You can populate specific fields if needed
+            .select("-photo") // Exclude large photo buffer
             .sort({ createdAt: -1 });
+
+        // If no offer product, return success with null
+        if (!offerProduct) {
+            return res.status(200).json({
+                success: true,
+                message: "No offer product found",
+                offerProduct: null,
+            });
+        }
+
         res.status(200).send({
             success: true,
-            countTotal: offerProducts.length,
-            message: "All Offer Products",
-            offerProducts,
+            message: "Offer Product fetched successfully",
+            offerProduct,
         });
     } catch (error) {
         console.log(error);
@@ -143,8 +152,7 @@ export const getOfferProductController = async(req,res)=>{
             error: error.message,
         });
     }
-}
-
+};
 //get singleProduct
 
 export const getSingleProductController = async (req, res) => {
@@ -282,4 +290,90 @@ export const relatedProductController = async (req, res) => {
         });
     }
 };
+
+// prodcount controller
+
+export const productCountController = async (req, res) => {
+    try {
+        const total = await productModel.estimatedDocumentCount();
+        res.status(200).send({
+            success: true,
+            total
+        });
+    } catch (error) {
+        res.status(500).send({
+            success: false,
+            message: "Error while counting products",
+            error
+        });
+    }
+}
+
+// product list per page
+
+export const productListController = async (req, res) => {
+    try {
+        const perPage = 6;
+        const page = req.params.page ? parseInt(req.params.page) : 1;
+        const products = await productModel
+            .find({})
+            .select("-photo")
+            .skip((page - 1) * perPage)
+            .limit(perPage)
+            .sort({ createdAt: -1 })
+            .populate("category");
+        res.status(200).send({
+            success: true,
+            products
+        });
+    } catch (error) {
+        res.status(500).send({
+            success: false,
+            message: "Error while getting product list",
+            error
+        });
+    }
+}
+
+// search controller
+export const searchProductController = async (req, res) => {
+    try {
+        const { keyword } = req.params;
+        const results = await productModel.find({
+            $or: [
+                { name: { $regex: keyword, $options: "i" } },
+                { description: { $regex: keyword, $options: "i" } }
+            ]
+        }).select("-photo");
+        res.json(results)
+    } catch (error) {
+        res.status(400).send({
+            success: false,
+            message: "Error In Search Product API",
+            error
+        });
+    }
+}
+
+// get products by category
+export const getProductsByCategoryController = async (req, res) => {
+    try {
+        const { categoryId } = req.params;
+        const products = await productModel
+            .find({ category: categoryId })
+            .select("-photo")
+            .populate("category");
+        res.status(200).send({
+            success: true,
+            products,
+        });
+    } catch (error) {
+        res.status(500).send({
+            success: false,
+            message: "Error while getting products by category",
+            error,
+        });
+    }
+};
+
 

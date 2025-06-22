@@ -20,12 +20,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 import { useAuth } from "../context/Auth";
 
 import { Minus, Plus, ShoppingCart } from "lucide-react";
 import { useCart } from "../context/Cart";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const { toast } = useToast();
@@ -35,7 +36,8 @@ export default function Navbar() {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [auth, setAuth] = useAuth();
-  const isLoggedIn = auth?.user != null
+  const isLoggedIn = auth?.user != null;
+  const router = useRouter();
 
   // remove cart
   const removeFromCart = (productId) => {
@@ -68,7 +70,7 @@ export default function Navbar() {
             <div key={item._id} className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <img
-                  src={`http://localhost:8080/api/v1/product/product-photo/${item._id}`}
+                  src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${item._id}`}
                   alt={item.name}
                   width={50}
                   height={50}
@@ -111,17 +113,18 @@ export default function Navbar() {
   );
 
   // logout function
-  const handleLogout = ()=>{
+  const handleLogout = () => {
     setAuth({
       ...auth,
-      user:null,
-      token:"",
-    })
-    localStorage.removeItem("auth")
+      user: null,
+      token: "",
+    });
+    localStorage.removeItem("auth");
     toast({
       title: "Logout successfully",
     });
-  }
+    router.push("/");
+  };
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -147,13 +150,13 @@ export default function Navbar() {
             Shop
           </Link>
           <Link
-            href="#"
+            href="about"
             className="text-green-700 hover:text-green-500 transition-colors"
           >
             About
           </Link>
           <Link
-            href="#"
+            href="contact"
             className="text-green-700 hover:text-green-500 transition-colors"
           >
             Contact
@@ -163,54 +166,51 @@ export default function Navbar() {
         <div className="flex gap-4">
           {!auth.user ? (
             <>
-            <Button variant="outline" className="hidden md:inline-flex">
-              <Link href="/login">Sign In</Link>
-            </Button>
-            <Button variant="outline" className="hidden md:inline-flex">
-              <Link href="/register">Register</Link>
-            </Button>
-          </>
-        ) : (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="hidden md:inline-flex">
-                <User className="mr-2 h-4 w-4" />
-                {auth?.user?.name || "Account"}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem>
-                <Link href={`/dashboard/${auth?.user?.role === 1 ? 'admin':'user'}`} className="flex items-center">
+              <Link href="/login" className="hidden md:inline-flex">
+                <Button variant="outline">Sign In</Button>
+              </Link>
+              <Link href="/register" className="hidden md:inline-flex">
+                <Button variant="outline">Register</Button>
+              </Link>
+            </>
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="hidden md:inline-flex">
                   <User className="mr-2 h-4 w-4" />
-                  Dashboard
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={handleLogout}>
-                <span className="flex items-center">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Log out
-                </span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                  {auth?.user?.name || "Account"}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem>
+                  <Link
+                    href={`/dashboard/${
+                      auth?.user?.role === 1 ? "admin" : "user"
+                    }`}
+                    className="flex items-center"
+                  >
+                    <User className="mr-2 h-4 w-4" />
+                    Dashboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={handleLogout}>
+                  <span className="flex items-center">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Log out
+                  </span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline" className="hidden md:inline-flex">
-                <ShoppingCart className="mr-2 h-4 w-4" />
-                Cart ({cart.length})
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle>Shopping Cart</DialogTitle>
-                <DialogDescription>
-                  Review your items and proceed to checkout.
-                </DialogDescription>
-              </DialogHeader>
-              <CartContent />
-            </DialogContent>
-          </Dialog>
+          {/* Cart Button */}
+          <Button
+            variant="outline"
+            className="hidden md:inline-flex"
+            onClick={() => router.push("/cart")}
+          >
+            <ShoppingCart className="mr-2 h-4 w-4" />
+            Cart ({cart.length})
+          </Button>
         </div>
         <Button
           variant="ghost"
@@ -231,74 +231,75 @@ export default function Navbar() {
               Home
             </Link>
             <Link
-              href="#"
+              href="/shop"
               className="text-green-700 hover:text-green-500 transition-colors"
             >
               Shop
             </Link>
             <Link
-              href="/shop"
+              href="/about"
               className="text-green-700 hover:text-green-500 transition-colors"
             >
               About
             </Link>
             <Link
-              href="#"
+              href="/contact"
               className="text-green-700 hover:text-green-500 transition-colors"
             >
               Contact
             </Link>
 
-           {!auth.user ? (
-            <>
-            <Button variant="outline" className="w-full justify-center">
-              <Link href="/login">Sign In</Link>
-            </Button>
-            <Button variant="outline" className="w-full justify-center">
-              <Link href="/register">Register</Link>
-            </Button>
-          </>
-        ) : (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="w-full justify-center">
-                <User className="mr-2 h-4 w-4" />
-                Account
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem>
-                <Link href="/dashboard" className="flex items-center">
-                  <User className="mr-2 h-4 w-4" />
-                  Dashboard
+            {!auth.user ? (
+              <>
+                <Link href="/login" className="w-full justify-center">
+                  <Button variant="outline" className="w-full justify-center">
+                    Sign In
+                  </Button>
                 </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={handleLogout}>
-                <span className="flex items-center">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Log out
-                </span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          )}
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="w-full justify-center">
-                  <ShoppingCart className="mr-2 h-4 w-4" />
-                  Cart ({cart.length})
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Shopping Cart</DialogTitle>
-                  <DialogDescription>
-                    Review your items and proceed to checkout.
-                  </DialogDescription>
-                </DialogHeader>
-                <CartContent />
-              </DialogContent>
-            </Dialog>
+                <Link href="/register" className="w-full justify-center">
+                  <Button variant="outline" className="w-full justify-center">
+                    Register
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" className="w-full justify-center">
+                    <User className="mr-2 h-4 w-4" />
+                    {auth?.user?.name || "Account"}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>
+                    <Link
+                      href={`/dashboard/${
+                        auth?.user?.role === 1 ? "admin" : "user"
+                      }`}
+                      className="flex items-center"
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      Dashboard
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onSelect={handleLogout}>
+                    <span className="flex items-center">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Log out
+                    </span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+            {/* Cart Button */}
+            <Button
+              variant="outline"
+              className="w-full justify-center"
+              onClick={() => router.push("/cart")}
+            >
+              <ShoppingCart className="mr-2 h-4 w-4" />
+              Cart ({cart.length})
+            </Button>
           </nav>
         </div>
       )}

@@ -41,30 +41,23 @@ export default function UserDashboard() {
   const [auth, setAuth] = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const basePath = "/dashboard/admin"; 
+  const basePath = "/dashboard/user";
 
   console.log("Pathname ", pathname);
-  const user = {
-    name: "Amaan",
-    email: "amaan1@gmail.com",
-    address: "123 Henna St, Artville, HA 12345",
-    avatar: "/placeholder.svg?height=100&width=100",
-  };
 
   const sidebarItems = [
     {
-      id: "category",
-      label: "Create Category",
-      icon: LayoutDashboard,
-      href: "/create-category",
+      id: "profile",
+      label: "Profile",
+      icon: User,
+      href: "/profile",
     },
     {
-      id: "createproduct",
-      label: "Create Product",
+      id: "orders",
+      label: "Orders",
       icon: ShoppingBag,
-      href: "/create-product",
+      href: "/orders",
     },
-    { id: "users", label: "Users", icon: User, href: "/users" },
   ];
 
   const SidebarContent = () => (
@@ -75,7 +68,7 @@ export default function UserDashboard() {
       <ScrollArea className="flex-1">
         <nav className="p-4 space-y-2">
           {sidebarItems.map((item) => (
-           <Link key={item.id}  href={`${basePath}${item.href}`} >
+            <Link key={item.id} href={`${basePath}${item.href}`}>
               <Button
                 variant="ghost"
                 className="w-full justify-start text-left font-normal hover:bg-green-100 hover:text-green-800"
@@ -109,7 +102,7 @@ export default function UserDashboard() {
           </Sheet>
           <h1 className="text-xl font-bold text-green-800">Dashboard</h1>
           <Avatar>
-            <AvatarImage src={user.avatar} alt={auth?.user?.name} />
+            <AvatarImage alt={auth?.user?.name} />
             <AvatarFallback>
               {auth?.user?.name.charAt(0).toUpperCase()}
             </AvatarFallback>
@@ -117,11 +110,9 @@ export default function UserDashboard() {
         </header>
 
         <div className="flex-1 flex overflow-hidden">
-          {/* Sidebar for larger screens */}
-          <aside className="hidden lg:block w-64 bg-white shadow-md">
+           <aside className="hidden lg:block w-64 bg-white shadow-md">
             <SidebarContent />
           </aside>
-
           {/* Main Content */}
           <main className="flex-1 overflow-y-auto p-4 lg:p-8">
             <div className="max-w-4xl mx-auto space-y-8">
@@ -130,7 +121,7 @@ export default function UserDashboard() {
                   Welcome, {auth?.user?.name}
                 </h1>
                 <Avatar className="hidden lg:flex h-12 w-12 bg-gray-800 ">
-                  <AvatarImage src={user.avatar} alt={auth?.user?.name} />
+                  <AvatarImage alt={auth?.user?.name} />
                   <AvatarFallback>
                     {auth?.user?.name.charAt(0).toUpperCase()}
                   </AvatarFallback>

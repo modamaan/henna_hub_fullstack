@@ -23,7 +23,7 @@ import {
   Mail,
   MapPin,
   Smartphone,
-  Gem 
+  Gem,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -42,15 +42,9 @@ export default function Dashboard() {
   const [auth, setAuth] = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  const basePath = "/dashboard/admin"; 
+  const basePath = "/dashboard/admin";
 
   console.log("Pathname ", pathname);
-  const user = {
-    name: "Amaan",
-    email: "amaan1@gmail.com",
-    address: "123 Henna St, Artville, HA 12345",
-    avatar: "/placeholder.svg?height=100&width=100",
-  };
 
   const sidebarItems = [
     {
@@ -66,17 +60,17 @@ export default function Dashboard() {
       href: "/create-product",
     },
     {
-      id: "offerproduct",
-      label: "Special Product",
-      icon: Gem,
-      href: "/create-offer",
-  },
+      id: "allorders",
+      label: "All Orders",
+      icon: ShoppingBag,
+      href: "/orders",
+    },
     { id: "users", label: "Users", icon: User, href: "/users" },
     {
-        id: "allproduct",
-        label: "All Products",
-        icon: ShoppingBag,
-        href: "/products",
+      id: "allproduct",
+      label: "All Products",
+      icon: ShoppingBag,
+      href: "/products",
     },
   ];
 
@@ -88,7 +82,7 @@ export default function Dashboard() {
       <ScrollArea className="flex-1">
         <nav className="p-4 space-y-2">
           {sidebarItems.map((item) => (
-           <Link key={item.id}  href={`${basePath}${item.href}`} >
+            <Link key={item.id} href={`${basePath}${item.href}`}>
               <Button
                 variant="ghost"
                 className="w-full justify-start text-left font-normal hover:bg-green-100 hover:text-green-800"
@@ -122,7 +116,7 @@ export default function Dashboard() {
           </Sheet>
           <h1 className="text-xl font-bold text-green-800">Dashboard</h1>
           <Avatar>
-            <AvatarImage src={user.avatar} alt={auth?.user?.name} />
+            <AvatarImage alt={auth?.user?.name} />
             <AvatarFallback>
               {auth?.user?.name.charAt(0).toUpperCase()}
             </AvatarFallback>
@@ -143,7 +137,7 @@ export default function Dashboard() {
                   Welcome, {auth?.user?.name}
                 </h1>
                 <Avatar className="hidden lg:flex h-12 w-12 bg-gray-800 ">
-                  <AvatarImage src={user.avatar} alt={auth?.user?.name} />
+                  <AvatarImage alt={auth?.user?.name} />
                   <AvatarFallback>
                     {auth?.user?.name.charAt(0).toUpperCase()}
                   </AvatarFallback>
@@ -197,32 +191,7 @@ export default function Dashboard() {
                   </div>
                 </CardContent>
               </Card>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="bg-white shadow-md hover:shadow-lg transition-shadow duration-300">
-                  <CardHeader>
-                    <CardTitle className="text-xl text-green-800">
-                      Recent Orders
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600">You have no recent orders.</p>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-white shadow-md hover:shadow-lg transition-shadow duration-300">
-                  <CardHeader>
-                    <CardTitle className="text-xl text-green-800">
-                      Account Activity
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-600">
-                      No recent activity to display.
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
+            
             </div>
           </main>
         </div>

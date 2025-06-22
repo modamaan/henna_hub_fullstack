@@ -16,8 +16,6 @@ import henna2 from "../../../images/henna2.webp";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 
-
-
 export default function ProductDetails({ params }) {
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -125,7 +123,7 @@ export default function ProductDetails({ params }) {
   const getSingleProduct = async () => {
     try {
       const { data } = await axios.get(
-        `http://localhost:8080/api/v1/product/get-product/${params.productSlug}`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/get-product/${params.productSlug}`
       );
       setProduct({
         category: data?.product?.category,
@@ -149,7 +147,7 @@ export default function ProductDetails({ params }) {
   const getSimilarProduct = async (pid, cid) => {
     try {
       const { data } = await axios.get(
-        `http://localhost:8080/api/v1/product/related-product/${pid}/${cid}`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/related-product/${pid}/${cid}`
       );
       setRelatedProducts(data?.products);
     } catch (error) {
@@ -178,7 +176,7 @@ export default function ProductDetails({ params }) {
                 style={{ paddingBottom: "75%" }}
               >
                 <ZoomableImage
-                  src={`http://localhost:8080/api/v1/product/product-photo/${id}`}
+                  src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${id}`}
                   alt={product.name}
                 />
               </div>
@@ -273,7 +271,7 @@ export default function ProductDetails({ params }) {
                   style={{ paddingBottom: "75%" }}
                 >
                   <img
-                    src={`http://localhost:8080/api/v1/product/product-photo/${product._id}`}
+                    src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${product._id}`}
                     alt={product.name}
                     className="absolute top-0 left-0 w-full h-full object-contain"
                   />
@@ -291,16 +289,12 @@ export default function ProductDetails({ params }) {
                   </p>
                 </CardContent>
                 <CardFooter className="bg-gray-50 p-4">
-                
-                 <Button
+                  <Button
                     variant="outline"
                     className="w-full hover:bg-green-50 text-green-600 border-green-600"
                   >
-                     <Link href={`/shop/${product.slug}`} >
-                    View Details
-                    </Link>
+                    <Link href={`/shop/${product.slug}`}>View Details</Link>
                   </Button>
-                 
                 </CardFooter>
               </Card>
             ))}

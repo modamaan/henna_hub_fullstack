@@ -2,7 +2,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {useCart} from '../context/Cart'
+import { useCart } from "../context/Cart";
 import {
   Carousel,
   CarouselContent,
@@ -10,26 +10,18 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import henna1 from "../../images/henna1.webp";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-const featuredProducts = [
-  { _id: 1, name: "Natural Henna Powder", price: 14.99, image: henna1 },
-  { _id: 2, name: "Organic Henna Cones", price: 19.99, image: henna1 },
-  { _id: 3, name: "Henna Stencil Kit", price: 24.99, image: henna1 },
-  { _id: 4, name: "Henna Aftercare Oil", price: 9.99, image: henna1 },
-  { _id: 5, name: "Premium Henna Applicator", price: 12.99, image: henna1 },
-  { _id: 6, name: "Henna Design Book", price: 29.99, image: henna1 },
-];
 export default function FeaturedProducts() {
-  // i want to local store this cart and using redux and use navbar page 
-  // const [cart, setCart] = useState([]);
-  const [cart, setCart] = useCart();  
-  console.log("Cartlenght",cart);
-  
+  const [featuredProducts, setFeaturedroducts] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [cart, setCart] = useCart();
+  console.log("Cartlenght", cart);
+
   const addToCart = (product) => {
-    console.log("product items",product);
-    
+    console.log("product items", product);
+
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item._id === product._id);
       if (existingItem) {
@@ -42,6 +34,46 @@ export default function FeaturedProducts() {
       return [...prevCart, { ...product, quantity: 1 }];
     });
   };
+
+  const getAllProducts = async () => {
+    try {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/get-product`
+      );
+      setProducts(data?.products || []);
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Something went wrong",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false); // Stop the loader once data is fetched
+    }
+  };
+
+  useEffect(() => {
+    // Fetch all products on mount
+    const fetchProducts = async () => {
+      try {
+        const { data } = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/get-product`
+        );
+        setProducts(data?.products || []);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    // Only filter by category === 'henna'
+    const filtered = products.filter(
+      (product) => product?.category?.name === "featured"
+    );
+    setFeaturedroducts(filtered);
+  }, [products]);
 
   return (
     <section className="py-16 bg-white">
@@ -58,7 +90,7 @@ export default function FeaturedProducts() {
                 className="overflow-hidden transition-shadow hover:shadow-lg"
               >
                 <Image
-                  src={product.image}
+                  src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${product._id}`}
                   alt={product.name}
                   width={300}
                   height={300}
@@ -71,7 +103,29 @@ export default function FeaturedProducts() {
                   </p>
                   <Button
                     className="w-full bg-green-600 hover:bg-green-700 text-white"
-                    onClick={() => addToCart(product)}
+                    onClick={() => {
+                      // Check if product already exists in cart
+                      const existingIndex = cart.findIndex(
+                        (item) => item._id === product._id
+                      );
+                      let newCart;
+                      if (existingIndex !== -1) {
+                        // If exists, increment quantity
+                        newCart = cart.map((item, idx) =>
+                          idx === existingIndex
+                            ? { ...item, quantity: (item.quantity || 1) + 1 }
+                            : item
+                        );
+                      } else {
+                        // If not, add with quantity 1
+                        newCart = [...cart, { ...product, quantity: 1 }];
+                      }
+                      setCart(newCart);
+                      localStorage.setItem("cart", JSON.stringify(newCart));
+                      toast({
+                        title: `${product.name} added to cart!`,
+                      });
+                    }}
                   >
                     Add to Cart
                   </Button>
@@ -92,7 +146,7 @@ export default function FeaturedProducts() {
                   <div className="p-1">
                     <Card className="overflow-hidden transition-shadow hover:shadow-lg">
                       <Image
-                        src={product.image}
+                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${product._id}`}
                         alt={product.name}
                         width={300}
                         height={300}
@@ -103,7 +157,7 @@ export default function FeaturedProducts() {
                           {product.name}
                         </h3>
                         <p className="text-green-700 font-bold mb-4">
-                          ${product.price.toFixed(2)}
+                          ₹{product.price.toFixed(2)}
                         </p>
                         <Button
                           className="w-full bg-green-600 hover:bg-green-700 text-white"

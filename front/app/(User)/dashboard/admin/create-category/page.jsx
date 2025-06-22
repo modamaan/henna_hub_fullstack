@@ -51,13 +51,6 @@ export default function CategoryCreator() {
 
   const basePath = "/dashboard/admin";
 
-  const user = {
-    name: "Amaan",
-    email: "amaan1@gmail.com",
-    address: "123 Henna St, Artville, HA 12345",
-    avatar: "/placeholder.svg?height=100&width=100",
-  };
-
   const sidebarItems = [
     {
       id: "category",
@@ -84,7 +77,7 @@ export default function CategoryCreator() {
   const getAllCategory = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:8080/api/v1/category/get-category"
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/category/get-category`
       );
       if (data.success) {
         setCategories(data.category);
@@ -107,7 +100,7 @@ export default function CategoryCreator() {
     e.preventDefault();
     try {
       const { data } = await axios.post(
-        "http://localhost:8080/api/v1/category/create-category",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/category/create-category`,
         { name }
       );
       if (data?.success) {
@@ -137,7 +130,7 @@ export default function CategoryCreator() {
 
     try {
       const { data } = await axios.put(
-        `http://localhost:8080/api/v1/category/update-category/${selected._id}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/category/update-category/${selected._id}`,
         { name: editingName }
       );
       if (data.success) {
@@ -167,7 +160,7 @@ export default function CategoryCreator() {
   const handleDelete = async (id) => {
     try {
       const { data } = await axios.delete(
-        `http://localhost:8080/api/v1/category/delete-category/${id}`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/category/delete-category/${id}`
       );
       if (data.success) {
         toast({
@@ -239,7 +232,7 @@ export default function CategoryCreator() {
           </Sheet>
           <h1 className="text-xl font-bold text-green-800">Dashboard</h1>
           <Avatar>
-            <AvatarImage src={user.avatar} alt={auth?.user?.name} />
+            <AvatarImage alt={auth?.user?.name} />
             <AvatarFallback>
               {auth?.user?.name.charAt(0).toUpperCase()}
             </AvatarFallback>

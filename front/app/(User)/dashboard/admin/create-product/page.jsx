@@ -50,6 +50,7 @@ export default function CreateProduct() {
     description: "",
     price: "",
     quantity: "",
+    offer: "",
     shipping: "",
   });
 
@@ -76,7 +77,7 @@ export default function CreateProduct() {
   const getAllCategory = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:8080/api/v1/category/get-category"
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/category/get-category`
       );
       if (data?.success) {
         setCategories(data?.category);
@@ -94,8 +95,16 @@ export default function CreateProduct() {
     e.preventDefault();
     console.log("Product to be created:", product);
     // Here you would typically send the data to your backend
-    const { name, description, price, quantity, photo, category, shipping } =
-      product;
+    const {
+      name,
+      description,
+      price,
+      quantity,
+      photo,
+      category,
+      shipping,
+      offer,
+    } = product;
     // Validate fields
     if (!name || !description || !price || !quantity || !photo || !category) {
       let errorMessage = "The following fields are required: ";
@@ -129,11 +138,12 @@ export default function CreateProduct() {
     productData.append("quantity", quantity);
     productData.append("photo", photo);
     productData.append("category", category);
+    productData.append("offer", offer);
     productData.append("shipping", shipping);
 
     try {
       const { data } = await axios.post(
-        "http://localhost:8080/api/v1/product/create-product",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/create-product`,
         productData
       );
 
@@ -179,10 +189,10 @@ export default function CreateProduct() {
     },
     { id: "users", label: "Users", icon: User, href: "/users" },
     {
-        id: "allproduct",
-        label: "All Products",
-        icon: ShoppingBag,
-        href: "/products",
+      id: "allproduct",
+      label: "All Products",
+      icon: ShoppingBag,
+      href: "/products",
     },
   ];
 
@@ -339,6 +349,17 @@ export default function CreateProduct() {
                           placeholder="Enter quantity"
                         />
                       </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="description">Offer</Label>
+                      <Input
+                        id="offer"
+                        name="offer"
+                        type="number"
+                        value={product.offer}
+                        onChange={handleInputChange}
+                        placeholder="Enter Offer"
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="shipping">Select Shipping</Label>

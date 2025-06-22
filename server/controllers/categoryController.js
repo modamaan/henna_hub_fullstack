@@ -1,4 +1,6 @@
 import categoryModel from "../models/categoryModel.js";
+import productModel from "../models/productModel.js";
+import offerModel from "../models/offerModel.js";
 import slugify from "slugify";
 
 
@@ -100,17 +102,20 @@ export const singleCategoryController = async (req, res) => {
 export const deleteCategoryController = async (req, res) => {
     try {
         const { id } = req.params;
+        // Delete all products with this category
+        await productModel.deleteMany({ category: id });
+        await offerModel.deleteMany({ category: id });
         await categoryModel.findByIdAndDelete(id);
         res.status(200).send({
             success: true,
-            message: "Category Deleted Successfully"
+            message: "Category and related products deleted successfully"
         })
     } catch (error) {
         console.log(error);
         res.status(500).send({
             success: false,
             error,
-            message: "Error while getting delete category",
+            message: "Error while deleting category and related products",
         });
     }
 };

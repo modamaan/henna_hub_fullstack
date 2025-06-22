@@ -13,9 +13,9 @@ export default function AdminRoute({ children }) { // Accept children as prop
   useEffect(() => {
     const authCheck = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/v1/auth/admin-auth');
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/admin-auth`);
         console.log("Response of Admin route", res);
-
+      
         if (res.data.ok) {
           setOk(true); // User is an admin, allow access
         } else {
@@ -38,6 +38,7 @@ export default function AdminRoute({ children }) { // Accept children as prop
         });
       }
     };
+    
 
     if (auth?.token) authCheck();
   }, [auth?.token, toast]);

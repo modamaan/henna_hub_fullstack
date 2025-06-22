@@ -70,7 +70,7 @@ export default function RegisterPage() {
 
       try {
         const res = await axios.post(
-          "http://localhost:8080/api/v1/auth/register",
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/register`,
           {
             name: formData.name,
             email: formData.email,

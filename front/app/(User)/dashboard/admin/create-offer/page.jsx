@@ -77,7 +77,7 @@ export default function CreateProduct() {
   const getAllCategory = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:8080/api/v1/category/get-category"
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/category/get-category`
       );
       if (data?.success) {
         setCategories(data?.category);
@@ -136,7 +136,7 @@ export default function CreateProduct() {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:8080/api/v1/product/create-offer",
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/create-offer`,
         productData
       );
 

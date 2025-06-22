@@ -28,7 +28,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-
 export default function Products() {
   const router = useRouter();
   const { toast } = useToast();
@@ -38,6 +37,11 @@ export default function Products() {
   const [categoryFilter, setCategoryFilter] = useState("");
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  // Add state for pagination and loading
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
     const filtered = products.filter(
@@ -59,14 +63,35 @@ export default function Products() {
   // get all products
   const getAllProducts = async () => {
     try {
+      setLoading(true);
       const { data } = await axios.get(
-        "http://localhost:8080/api/v1/product/get-product"
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-list/${page}`
       );
-      setProducts(data?.products);
+      setProducts((prev) =>
+        page === 1 ? data?.products : [...prev, ...data?.products]
+      );
+      setLoading(false);
     } catch (error) {
-      console.log(error);
+      setLoading(false);
       toast({
         title: "Something went wrong",
+        variant: "destructive",
+      });
+    } finally {
+      setInitialLoading(false);
+    }
+  };
+
+  // Fetch total product count
+  const getTotal = async () => {
+    try {
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-count`
+      );
+      setTotal(data?.total);
+    } catch (error) {
+      toast({
+        title: "Failed to fetch total product count",
         variant: "destructive",
       });
     }
@@ -76,7 +101,7 @@ export default function Products() {
   const getAllCategory = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:8080/api/v1/category/get-category"
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/category/get-category`
       );
       if (data?.success) {
         setCategories(data?.category);
@@ -86,10 +111,24 @@ export default function Products() {
     }
   };
 
+  // Load more products
+  const loadMore = async () => {
+    setPage((prev) => prev + 1);
+  };
+
+  // Fetch products and total on mount, fetch more on page change
   useEffect(() => {
     getAllProducts();
     getAllCategory();
+    getTotal();
+    // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    if (page === 1) return;
+    getAllProducts();
+    // eslint-disable-next-line
+  }, [page]);
 
   // console.log("all category",categoryList)
   console.log("products", products);
@@ -198,7 +237,7 @@ export default function Products() {
                 >
                   <Card className="overflow-hidden">
                     <img
-                      src={`http://localhost:8080/api/v1/product/product-photo/${product._id}`}
+                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${product._id}`}
                       alt={product.name}
                       className="w-full h-48 object-contain"
                     />
@@ -222,6 +261,15 @@ export default function Products() {
                 </Link>
               ))}
             </div>
+            {products.length < total && (
+              <Button
+                className="w-fit px-6 py-2 mx-auto my-6 block rounded-md bg-green-600 text-white font-medium hover:bg-green-700 transition-colors duration-200 disabled:opacity-50"
+                onClick={loadMore}
+                disabled={loading}
+              >
+                {loading ? "Loading..." : "Load More"}
+              </Button>
+            )}
           </div>
         </div>
       </div>

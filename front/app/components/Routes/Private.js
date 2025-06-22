@@ -13,7 +13,7 @@ export default function PrivateRoute({ children }) { // Accept children as prop
   useEffect(() => {
     const authCheck = async () => {
       try {
-        const res = await axios.get('http://localhost:8080/api/v1/auth/user-auth');
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/auth/user-auth`);
         console.log("Response of private route", res);
 
         if (res.data.ok) {

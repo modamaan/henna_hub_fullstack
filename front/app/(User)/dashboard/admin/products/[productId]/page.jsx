@@ -91,7 +91,7 @@ export default function UpdateProduct({ params }) {
   const getSingleProduct = async () => {
     try {
       const { data } = await axios.get(
-        `http://localhost:8080/api/v1/product/get-product/${params.productId}`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/get-product/${params.productId}`
       );
       setProduct({
         category: data?.product?.category,
@@ -117,7 +117,7 @@ export default function UpdateProduct({ params }) {
   const getAllCategory = async () => {
     try {
       const { data } = await axios.get(
-        "http://localhost:8080/api/v1/category/get-category"
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/category/get-category`
       );
       if (data?.success) {
         setCategories(data?.category);
@@ -179,7 +179,7 @@ export default function UpdateProduct({ params }) {
 
     try {
       const { data } = await axios.put(
-        `http://localhost:8080/api/v1/product/update-product/${id}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/update-product/${id}`,
         productData
       );
 
@@ -206,13 +206,14 @@ export default function UpdateProduct({ params }) {
     }
   };
 
-
-  const handleDelete = async()=>{
+  const handleDelete = async () => {
     try {
-      let answer = window.prompt("Are you sure you want to delete this product?");
+      let answer = window.prompt(
+        "Are you sure you want to delete this product?"
+      );
       if (!answer) return;
       const { data } = await axios.delete(
-        `http://localhost:8080/api/v1/product/delete-product/${id}`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/delete-product/${id}`
       );
       toast({
         title: "Product deleted Successfully",
@@ -226,7 +227,7 @@ export default function UpdateProduct({ params }) {
         variant: "destructive",
       });
     }
-  }
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -308,7 +309,7 @@ export default function UpdateProduct({ params }) {
                       ) : (
                         <div className="flex flex-col items-center w-full h-full">
                           <img
-                            src={`http://localhost:8080/api/v1/product/product-photo/${id}`}
+                            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${id}`}
                             alt="Product preview"
                             className="max-w-full max-h-full object-contain" // Ensure the image fits within the container
                           />

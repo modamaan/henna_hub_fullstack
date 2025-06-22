@@ -13,3 +13,4 @@ nextConfig.images = {
 
 
 export default nextConfig;
+

@@ -134,7 +134,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-sm">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link href="/" className="text-2xl font-bold text-green-800">
-          Henna Heaven
+          Henna Hub
         </Link>
         <nav className="hidden md:flex space-x-6">
           <Link

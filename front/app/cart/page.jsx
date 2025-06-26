@@ -151,7 +151,7 @@ const CartPage = () => {
                           <div className="flex flex-col sm:flex-row gap-4">
                             <div className="flex-shrink-0">
                               <div className="w-24 h-24 bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl overflow-hidden border border-emerald-200">
-                                <Image
+                                <img
                                   src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${item._id}`}
                                   alt={item.name}
                                   width={96}

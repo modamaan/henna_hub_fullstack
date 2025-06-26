@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCart } from "../context/Cart";
+import Link from "next/link";
 import {
   Carousel,
   CarouselContent,
@@ -17,7 +18,7 @@ import axios from "axios";
 export default function FeaturedProducts() {
   const [featuredProducts, setFeaturedroducts] = useState([]);
   const [products, setProducts] = useState([]);
-  const {toast} = useToast()
+  const { toast } = useToast();
   const [cart, setCart] = useCart();
   console.log("Cartlenght", cart);
 
@@ -86,18 +87,20 @@ export default function FeaturedProducts() {
         {/* Mobile and Tablet Grid */}
         <div className="block lg:hidden">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            {featuredProducts.slice(0, 4).map((product) => (
+            {featuredProducts.map((product) => (
               <Card
                 key={product._id}
                 className="overflow-hidden transition-shadow hover:shadow-lg"
               >
-                <Image
-                  src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${product._id}`}
-                  alt={product.name}
-                  width={300}
-                  height={300}
-                  className="w-full h-48 object-cover"
-                />
+                <Link href={`/shop/${product.slug}`}>
+                  <img
+                    src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${product._id}`}
+                    alt={product.name}
+                    width={200}
+                    height={200}
+                    className="w-full h-48 object-cover"
+                  />
+                </Link>
                 <CardContent className="p-4">
                   <h3 className="font-semibold text-lg mb-2">{product.name}</h3>
                   <p className="text-green-700 font-bold mb-4">
@@ -147,13 +150,15 @@ export default function FeaturedProducts() {
                 >
                   <div className="p-1">
                     <Card className="overflow-hidden transition-shadow hover:shadow-lg">
-                      <Image
-                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${product._id}`}
-                        alt={product.name}
-                        width={300}
-                        height={300}
-                        className="w-full h-48 object-cover"
-                      />
+                      <Link href={`/shop/${product.slug}`}>
+                        <img
+                          src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${product._id}`}
+                          alt={product.name}
+                          width={200}
+                          height={200}
+                          className="w-full h-48 object-cover"
+                        />
+                      </Link>
                       <CardContent className="p-4">
                         <h3 className="font-semibold text-lg mb-2">
                           {product.name}
@@ -171,14 +176,20 @@ export default function FeaturedProducts() {
                             if (existingIndex !== -1) {
                               newCart = cart.map((item, idx) =>
                                 idx === existingIndex
-                                  ? { ...item, quantity: (item.quantity || 1) + 1 }
+                                  ? {
+                                      ...item,
+                                      quantity: (item.quantity || 1) + 1,
+                                    }
                                   : item
                               );
                             } else {
                               newCart = [...cart, { ...product, quantity: 1 }];
                             }
                             setCart(newCart);
-                            localStorage.setItem("cart", JSON.stringify(newCart));
+                            localStorage.setItem(
+                              "cart",
+                              JSON.stringify(newCart)
+                            );
                             toast({ title: `${product.name} added to cart!` });
                           }}
                         >

@@ -11,11 +11,13 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 
 export default function FeaturedProducts() {
   const [featuredProducts, setFeaturedroducts] = useState([]);
   const [products, setProducts] = useState([]);
+  const {toast} = useToast()
   const [cart, setCart] = useCart();
   console.log("Cartlenght", cart);
 
@@ -161,7 +163,24 @@ export default function FeaturedProducts() {
                         </p>
                         <Button
                           className="w-full bg-green-600 hover:bg-green-700 text-white"
-                          onClick={() => addToCart(product)}
+                          onClick={() => {
+                            const existingIndex = cart.findIndex(
+                              (item) => item._id === product._id
+                            );
+                            let newCart;
+                            if (existingIndex !== -1) {
+                              newCart = cart.map((item, idx) =>
+                                idx === existingIndex
+                                  ? { ...item, quantity: (item.quantity || 1) + 1 }
+                                  : item
+                              );
+                            } else {
+                              newCart = [...cart, { ...product, quantity: 1 }];
+                            }
+                            setCart(newCart);
+                            localStorage.setItem("cart", JSON.stringify(newCart));
+                            toast({ title: `${product.name} added to cart!` });
+                          }}
                         >
                           Add to Cart
                         </Button>

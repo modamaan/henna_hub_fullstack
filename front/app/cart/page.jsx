@@ -27,36 +27,6 @@ const CartPage = () => {
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useCart();
   const [auth, setAuth] = useAuth();
-  const [cartItems, setCartItems] = useState([
-    {
-      id: "1",
-      name: "Gradient Graphic T-shirt",
-      size: "Large",
-      color: "White",
-      price: 145,
-      quantity: 1,
-      image: image,
-    },
-    {
-      id: "2",
-      name: "Checkered Shirt",
-      size: "Medium",
-      color: "Red",
-      price: 180,
-      quantity: 1,
-      image: image1,
-    },
-    {
-      id: "3",
-      name: "Skinny Fit Jeans",
-      size: "Large",
-      color: "Blue",
-      price: 240,
-      quantity: 1,
-      image: image2,
-    },
-  ]);
-
   const [promoCode, setPromoCode] = useState("");
   const [shippingAddressOption, setShippingAddressOption] = useState("current");
 

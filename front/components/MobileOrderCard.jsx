@@ -30,14 +30,14 @@ import axios from "axios";
 // Utility function to determine badge color
 function getStatusColor(status) {
   switch ((status || "").toLowerCase()) {
-    case "completed":
+    case "Delivered":
       return "bg-green-100 text-green-700 border-green-200";
-    case "in progress":
+    case "Processing":
       return "bg-blue-100 text-blue-700 border-blue-200";
     case "waiting":
       return "bg-amber-100 text-amber-700 border-amber-200";
     default:
-      return "bg-gray-100 text-gray-700 border-gray-200";
+      return "bg-gray-100 text-gray-700 hover:bg-gray-200 border-gray-200";
   }
 }
 
@@ -259,6 +259,12 @@ export function MobileOrderCard({ order, isExpanded, onToggle }) {
                       ₹{shipping.toFixed(2)}
                     </span>
                   </div>
+                  {order.shippingAddress && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Address:</span>
+                      <span className="text-gray-800 text-right max-w-[60%] truncate">{order.shippingAddress}</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Tax:</span>
                     <span className="text-gray-800">₹{tax.toFixed(2)}</span>

@@ -3,6 +3,7 @@ env.config();
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import orderModel from "../models/orderModel.js";
+import userModel from "../models/userModel.js";
 
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
@@ -25,12 +26,20 @@ export const createOrder = async (req, res) => {
 };
 
 export const verifyPayment = async (req, res) => {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, cart, userId } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, cart, userId, shippingAddressOption } = req.body;
     const key_secret = process.env.RAZORPAY_KEY_SECRET;
     const generated_signature = crypto
         .createHmac("sha256", key_secret)
         .update(razorpay_order_id + "|" + razorpay_payment_id)
         .digest("hex");
+    let shippingAddress = "";
+    if (shippingAddressOption === "pickup") {
+        shippingAddress = "Pick up from store";
+    } else {
+        // Fetch user address from DB
+        const user = await userModel.findById(userId);
+        shippingAddress = user && user.address ? (typeof user.address === 'string' ? user.address : JSON.stringify(user.address)) : "";
+    }
     if (generated_signature === razorpay_signature) {
         // Save order to DB
         try {
@@ -47,6 +56,7 @@ export const verifyPayment = async (req, res) => {
                     verified: true
                 },
                 buyer: userId,
+                shippingAddress,
                 status: "Processing"
             });
             await order.save();
@@ -69,6 +79,7 @@ export const verifyPayment = async (req, res) => {
                 verified: false
             },
             buyer: userId,
+            shippingAddress,
             status: "Cancel"
         });
         await order.save();

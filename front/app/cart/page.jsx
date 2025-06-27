@@ -15,6 +15,13 @@ import { Minus, Plus, Trash2, Tag, ShoppingBag, User } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "../context/Auth";
 import RazorpayButton from "../../components/RazorpayButton";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 const CartPage = () => {
   const [loading, setLoading] = useState(true);
@@ -51,6 +58,7 @@ const CartPage = () => {
   ]);
 
   const [promoCode, setPromoCode] = useState("");
+  const [shippingAddressOption, setShippingAddressOption] = useState("current");
 
   // Add to cart: ensure quantity is set to 1 if not present
   const addToCart = (product) => {
@@ -312,8 +320,32 @@ const CartPage = () => {
                       </div>
                     </div>
 
+                    {/* Shipping Address Dropdown */}
+                    <div className="mb-6">
+                      <label className="block text-emerald-700 font-medium mb-2">
+                        Shipping Address
+                      </label>
+                      <Select
+                        value={shippingAddressOption}
+                        onValueChange={setShippingAddressOption}
+                      >
+                        <SelectTrigger className="w-full border border-emerald-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                          <SelectValue placeholder="Select shipping address" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="current">Current Address</SelectItem>
+                          <SelectItem value="pickup">Pick up from store</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
                     {/* Checkout Button replaced with RazorpayButton */}
-                    <RazorpayButton amount={total} user={auth?.user} cart={cart} />
+                    <RazorpayButton
+                      amount={total}
+                      user={auth?.user}
+                      cart={cart}
+                      shippingAddressOption={shippingAddressOption}
+                    />
                   </div>
                 </div>
               </div>

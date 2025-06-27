@@ -16,6 +16,10 @@ const orderSchema = mongoose.Schema({
         type: mongoose.ObjectId,
         ref: "User"
     },
+    shippingAddress: {
+        type: String, // Save full address string or pickup note
+        required: true
+    },
     status: {
         type: String,
         default: "Not Process",

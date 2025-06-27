@@ -16,7 +16,7 @@ const loadRazorpayScript = () => {
   });
 };
 
-const RazorpayButton = ({ amount, user, cart }) => {
+const RazorpayButton = ({ amount, user, cart, shippingAddressOption }) => {
   const { toast } = useToast();
   const [_, setCart] = useCart();
   const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -67,6 +67,7 @@ const RazorpayButton = ({ amount, user, cart }) => {
               razorpay_signature: response.razorpay_signature,
               cart,
               userId: user?._id,
+              shippingAddressOption, // Pass the selected shipping address option
             }
           );
           if (verifyRes.data.success) {

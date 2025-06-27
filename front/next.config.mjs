@@ -8,9 +8,13 @@ nextConfig.images = {
       port: '8080',
       pathname: '/api/v1/product/product-photo/**',
     },
+    {
+      protocol: 'https',
+      hostname: 'hennahub-backend.onrender.com',
+      pathname: '/api/v1/product/product-photo/**',
+    },
   ],
 };
-
 
 export default nextConfig;
 

@@ -30,8 +30,8 @@ const productSchema = mongoose.Schema({
         type: Number,
     },
     photo: {
-        data: Buffer,
-        contentType: String,
+        type: String, // Cloudinary image URL
+        required: true
     },
     shipping: {
         type: String

@@ -209,7 +209,7 @@ export function MobileOrderCard({ order, isExpanded, onToggle }) {
                           className="flex items-center gap-3 p-3 bg-white rounded-lg border border-sage-200 shadow-sm"
                         >
                           <img
-                            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${product._id || product.id || item._id}`}
+                            src={product.photo}
                             alt={product.name || "Product"}
                             width={48}
                             height={48}

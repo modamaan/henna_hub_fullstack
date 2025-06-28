@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
-import { ShoppingCart, Search } from "lucide-react";
-
+import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -18,9 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import henna1 from "../../images/henna.jpg";
-import henna2 from "../../images/henna1.webp";
-import henna3 from "../../images/henna2.webp";
 import Navbar from "../components/Navbar";
 import { useCart } from "../context/Cart";
 import Footer from "../components/Footer";
@@ -39,13 +35,10 @@ export default function ShopPage() {
   const [cart, setCart] = useCart();
   const [values, setValues] = useSearch();
   const [products, setProducts] = useState([]);
-  // offer product state
   const [offer, setOffer] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("All");
   const [categoryList, setCategories] = useState([]);
   const [categoryFilter, setCategoryFilter] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [InitialLoading, setInitialLoading] = useState(true); // Loader state
+  const [InitialLoading, setInitialLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -79,7 +72,7 @@ export default function ShopPage() {
         variant: "destructive",
       });
     } finally {
-      setInitialLoading(false); // Stop the loader once data is fetched
+      setInitialLoading(false);
     }
   };
 
@@ -98,7 +91,6 @@ export default function ShopPage() {
     }
   };
 
-  // get all offer products
   const getAllOfferProducts = async () => {
     try {
       const { data } = await axios.get(
@@ -111,7 +103,6 @@ export default function ShopPage() {
       }
     } catch (error) {
       setOffer(null);
-      // Optionally log or toast error
     }
   };
 
@@ -154,16 +145,7 @@ export default function ShopPage() {
     }
   };
 
-  console.log("get all offer products", offer);
-
-  const categories = [
-    "All",
-    ...new Set(categoryList.map((product) => product.category)),
-  ];
-
-  // Update products when categoryFilter changes
   useEffect(() => {
-    // If not 'all', fetch products for the selected category
     if (categoryFilter && categoryFilter !== "all") {
       setLoading(true);
       axios
@@ -173,7 +155,7 @@ export default function ShopPage() {
         .then(({ data }) => {
           setProducts(data?.products || []);
         })
-        .catch((error) => {
+        .catch(() => {
           toast({
             title: "Failed to fetch products for category",
             variant: "destructive",
@@ -181,17 +163,13 @@ export default function ShopPage() {
         })
         .finally(() => setLoading(false));
     } else {
-      // If 'all', fetch all products
       getAllProducts();
     }
   }, [categoryFilter]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
-      {/* Navbar */}
       <Navbar />
-
-      {/* Special Offer Banner - Only show if offer exists */}
       {offer && offer._id && (
         <section className="bg-green-600 text-white py-12">
           <div className="container mx-auto px-4">
@@ -211,8 +189,8 @@ export default function ShopPage() {
               <div className="md:w-1/2">
                 <Card className="w-full max-w-md mx-auto">
                   <CardContent className="p-6">
-                    <img
-                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${offer._id}`}
+                    <Image
+                      src={offer.photo}
                       alt={offer.name}
                       width={300}
                       height={300}
@@ -265,8 +243,6 @@ export default function ShopPage() {
           </div>
         </section>
       )}
-
-      {/* Search and Filter */}
       <form onSubmit={handleSubmit}>
         <div className="container mx-auto px-4 my-8 flex flex-col md:flex-row gap-4">
           <div className="relative flex-grow">
@@ -296,10 +272,8 @@ export default function ShopPage() {
           </Select>
         </div>
       </form>
-
-      {/* Product Grid or Loader */}
       {InitialLoading ? (
-        <Loader /> // Show loader while data is being fetched
+        <Loader />
       ) : (
         <section className="py-12">
           <div className="container mx-auto px-4">
@@ -307,12 +281,12 @@ export default function ShopPage() {
               {products.map((product) => (
                 <Card key={product._id} className="overflow-hidden">
                   <Link href={`/shop/${product.slug}`}>
-                    <img
-                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${product._id}`}
+                    <Image
+                      src={product.photo}
                       alt={product.name}
                       width={200}
                       height={200}
-                      className="w-full h-48 object-contain"
+                      className="w-full h-48 object-cover"
                     />
                   </Link>
                   <CardContent className="p-4">
@@ -332,20 +306,17 @@ export default function ShopPage() {
                     <Button
                       className="w-full bg-green-600 hover:bg-green-700 text-white"
                       onClick={() => {
-                        // Check if product already exists in cart
                         const existingIndex = cart.findIndex(
                           (item) => item._id === product._id
                         );
                         let newCart;
                         if (existingIndex !== -1) {
-                          // If exists, increment quantity
                           newCart = cart.map((item, idx) =>
                             idx === existingIndex
                               ? { ...item, quantity: (item.quantity || 1) + 1 }
                               : item
                           );
                         } else {
-                          // If not, add with quantity 1
                           newCart = [...cart, { ...product, quantity: 1 }];
                         }
                         setCart(newCart);
@@ -378,7 +349,6 @@ export default function ShopPage() {
           </Button>
         )}
       </div>
-      {/* Footer */}
       <Footer />
     </div>
   );

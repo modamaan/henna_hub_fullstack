@@ -1,3 +1,4 @@
+env.config()
 import express from 'express';
 import colors from "colors"
 import env from 'dotenv'
@@ -9,18 +10,17 @@ import productRoutes from './routes/productRoutes.js'
 import paymentRoutes from './routes/paymentRoutes.js'
 import cors from 'cors'
 
-env.config()
-
 // Database config
 conneDB()
 
 const app = express()
 
-//middleware
+// middleware
 app.use(cors({
   origin: process.env.CORS_ORIGIN,
   credentials: true
 }))
+
 app.use(express.json())
 app.use(morgan('dev'))
 

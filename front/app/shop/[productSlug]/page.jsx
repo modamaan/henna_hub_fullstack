@@ -271,7 +271,7 @@ export default function ProductDetails({ params }) {
                   style={{ paddingBottom: "75%" }}
                 >
                   <img
-                    src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${product._id}`}
+                    src={product.photo}
                     alt={product.name}
                     className="absolute top-0 left-0 w-full h-full object-contain"
                   />

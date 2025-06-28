@@ -122,9 +122,9 @@ export default function CreateProduct() {
       return;
     }
 
-    if (photo.size > 1000000) {
+    if (photo.size > 10 * 1024 * 1024) {
       toast({
-        title: "Photo should be less than 1MB",
+        title: "Photo should be less than 10MB",
         variant: "destructive",
       });
       return;

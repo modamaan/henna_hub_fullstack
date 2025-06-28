@@ -93,8 +93,8 @@ export default function FeaturedProducts() {
                 className="overflow-hidden transition-shadow hover:shadow-lg"
               >
                 <Link href={`/shop/${product.slug}`}>
-                  <img
-                    src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${product._id}`}
+                  <Image
+                    src={product.photo}
                     alt={product.name}
                     width={200}
                     height={200}
@@ -151,8 +151,8 @@ export default function FeaturedProducts() {
                   <div className="p-1">
                     <Card className="overflow-hidden transition-shadow hover:shadow-lg">
                       <Link href={`/shop/${product.slug}`}>
-                        <img
-                          src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${product._id}`}
+                        <Image
+                          src={product.photo}
                           alt={product.name}
                           width={200}
                           height={200}

@@ -2,6 +2,7 @@ import productModel from "../models/productModel.js";
 import fs from "fs";
 import slugify from "slugify";
 import offerModel from "../models/offerModel.js";
+import cloudinary from "../config/cloudinary.js";
 
 
 export const createProductController = async (req, res) => {
@@ -21,17 +22,24 @@ export const createProductController = async (req, res) => {
                 return res.status(500).send({ error: "Category is required" });
             case !quantity:
                 return res.status(500).send({ error: "Quantity is required" });
-            case photo && photo.size > 1000000:
+            case photo && photo.size > 10 * 1024 * 1024:
                 return res.status(500).send({
-                    error: "Photo is required and should be less than 1mb",
+                    error: "Photo is required and should be less than 10 MB",
                 });
         }
 
-        const products = new productModel({ ...req.fields, slug: slugify(name) });
+        let photoUrl = "";
         if (photo) {
-            products.photo.data = fs.readFileSync(photo.path);
-            products.photo.contentType = photo.type;
+            const result = await cloudinary.uploader.upload(photo.path, {
+                folder: "products",
+                resource_type: "image"
+            });
+            photoUrl = result.secure_url;
+        } else {
+            return res.status(500).send({ error: "Photo is required" });
         }
+
+        const products = new productModel({ ...req.fields, slug: slugify(name), photo: photoUrl });
         await products.save();
         res.status(201).send({
             success: true,
@@ -68,17 +76,24 @@ export const createOfferProductController = async (req, res) => {
                 return res.status(500).send({ error: "Category is required" });
             case !quantity:
                 return res.status(500).send({ error: "Quantity is required" });
-            case photo && photo.size > 1000000:
+            case photo && photo.size > 10 * 1024 * 1024:
                 return res.status(500).send({
-                    error: "Photo is required and should be less than 1mb",
+                    error: "Photo is required and should be less than 10MB",
                 });
         }
 
-        const products = new offerModel({ ...req.fields, slug: slugify(name) });
+        let photoUrl = "";
         if (photo) {
-            products.photo.data = fs.readFileSync(photo.path);
-            products.photo.contentType = photo.type;
+            const result = await cloudinary.uploader.upload(photo.path, {
+                folder: "products",
+                resource_type: "image"
+            });
+            photoUrl = result.secure_url;
+        } else {
+            return res.status(500).send({ error: "Photo is required" });
         }
+
+        const products = new offerModel({ ...req.fields, slug: slugify(name), photo: photoUrl });
         await products.save();
         res.status(201).send({
             success: true,
@@ -102,7 +117,6 @@ export const getProductController = async (req, res) => {
         const products = await productModel
             .find({})
             .populate("category")
-            .select("-photo")
             .limit(12)
             .sort({ createdAt: -1 });
         res.status(200).send({
@@ -126,8 +140,7 @@ export const getOfferProductController = async (req, res) => {
     try {
         // Find one product that has an offer greater than 0
         const offerProduct = await productModel.findOne({ offer: { $gt: 0 } })
-            .populate("category", "name") // You can populate specific fields if needed
-            .select("-photo") // Exclude large photo buffer
+            .populate("category", "name")
             .sort({ createdAt: -1 });
 
         // If no offer product, return success with null
@@ -159,7 +172,6 @@ export const getSingleProductController = async (req, res) => {
     try {
         const product = await productModel
             .findOne({ slug: req.params.slug })
-            .select("-photo")
             .populate("category");
         res.status(200).send({
             success: true,
@@ -216,21 +228,24 @@ export const updateProductController = async (req, res) => {
                 return res.status(500).send({ error: "Category is required" });
             case !quantity:
                 return res.status(500).send({ error: "Quantity is required" });
-            case photo && photo.size > 1000000:
+            case photo && photo.size > 10 * 1024 * 1024:
                 return res.status(500).send({
-                    error: "Photo is required and should be less than 1mb",
+                    error: "Photo is required and should be less than 10MB",
                 });
+        }
+        let updateData = { ...req.fields, slug: slugify(name) };
+        if (photo) {
+            const result = await cloudinary.uploader.upload(photo.path, {
+                folder: "products",
+                resource_type: "image"
+            });
+            updateData.photo = result.secure_url;
         }
         const products = await productModel.findByIdAndUpdate(
             req.params.pid,
-            { ...req.fields, slug: slugify(name) },
+            updateData,
             { new: true }
         );
-        if (photo) {
-            products.photo.data = fs.readFileSync(photo.path);
-            products.photo.contentType = photo.type;
-        }
-        await products.save();
         res.status(201).send({
             success: true,
             message: "Product Updated Successfully",
@@ -274,7 +289,6 @@ export const relatedProductController = async (req, res) => {
                 category: cid,
                 _id: { $ne: pid },
             })
-            .select("-photo")
             .limit(3)
             .populate("category");
         res.status(200).send({
@@ -317,7 +331,6 @@ export const productListController = async (req, res) => {
         const page = req.params.page ? parseInt(req.params.page) : 1;
         const products = await productModel
             .find({})
-            .select("-photo")
             .skip((page - 1) * perPage)
             .limit(perPage)
             .sort({ createdAt: -1 })
@@ -344,7 +357,7 @@ export const searchProductController = async (req, res) => {
                 { name: { $regex: keyword, $options: "i" } },
                 { description: { $regex: keyword, $options: "i" } }
             ]
-        }).select("-photo");
+        })
         res.json(results)
     } catch (error) {
         res.status(400).send({

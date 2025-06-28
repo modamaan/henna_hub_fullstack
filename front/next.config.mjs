@@ -13,6 +13,11 @@ nextConfig.images = {
       hostname: 'hennahub-backend.onrender.com',
       pathname: '/api/v1/product/product-photo/**',
     },
+    {
+      protocol: 'https',
+      hostname: 'res.cloudinary.com',
+      pathname: '/**',
+    },
   ],
 };
 

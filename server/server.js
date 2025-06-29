@@ -1,7 +1,7 @@
-env.config()
+import env from 'dotenv';
+env.config();
 import express from 'express';
 import colors from "colors"
-import env from 'dotenv'
 import morgan from 'morgan';
 import conneDB from './config/db.js';
 import authRoutes from './routes/authRoute.js'
@@ -15,11 +15,12 @@ conneDB()
 
 const app = express()
 
-// middleware
+//middleware
 app.use(cors({
   origin: process.env.CORS_ORIGIN,
   credentials: true
 }))
+
 
 app.use(express.json())
 app.use(morgan('dev'))

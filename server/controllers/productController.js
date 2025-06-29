@@ -4,7 +4,6 @@ import slugify from "slugify";
 import offerModel from "../models/offerModel.js";
 import cloudinary from "../config/cloudinary.js";
 
-
 export const createProductController = async (req, res) => {
     try {
         const { name, slug, description, price, quantity, category, shipping, offer } =

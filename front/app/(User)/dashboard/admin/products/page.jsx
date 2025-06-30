@@ -229,7 +229,7 @@ export default function Products() {
             </div>
 
             {/* Products Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
               {filteredProducts.map((product) => (
                 <Link
                   key={product._id}
@@ -239,7 +239,7 @@ export default function Products() {
                     <img
                       src={product.photo}
                       alt={product.name}
-                      className="w-full h-48 object-contain"
+                      className="w-full aspect-square object-cover"
                     />
                     <CardContent className="p-4">
                       <h2 className="text-xl font-semibold mb-2">

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ShoppingCart, Heart, Minus, Plus } from "lucide-react";
@@ -78,48 +78,6 @@ export default function ProductDetails({ params }) {
   // console.log("shipping", shipping);
   // console.log("ID", id);
 
-  // image zooming
-  const ZoomableImage = ({ src, alt }) => {
-    const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
-    const [isZoomed, setIsZoomed] = useState(false);
-    const imageRef = useRef(null);
-
-    const handleMouseMove = (e) => {
-      if (imageRef.current) {
-        const { left, top, width, height } =
-          imageRef.current.getBoundingClientRect();
-        const x = (e.clientX - left) / width;
-        const y = (e.clientY - top) / height;
-        setZoomPosition({ x, y });
-      }
-    };
-
-    return (
-      <div
-        className="relative w-full aspect-square overflow-hidden bg-white rounded-lg shadow-md"
-        onMouseEnter={() => setIsZoomed(true)}
-        onMouseLeave={() => setIsZoomed(false)}
-        onMouseMove={handleMouseMove}
-        ref={imageRef}
-      >
-        <img src={src} alt={alt} className="w-full h-full object-contain" />
-        {isZoomed && (
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              backgroundImage: `url(${src})`,
-              backgroundPosition: `${zoomPosition.x * 100}% ${
-                zoomPosition.y * 100
-              }%`,
-              backgroundSize: "200%",
-              backgroundRepeat: "no-repeat",
-            }}
-          />
-        )}
-      </div>
-    );
-  };
-
   const getSingleProduct = async () => {
     try {
       const { data } = await axios.get(
@@ -171,13 +129,11 @@ export default function ProductDetails({ params }) {
           {/* Main Product Details */}
           <div className="lg:w-1/2">
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div
-                className="relative w-full h-0"
-                style={{ paddingBottom: "75%" }}
-              >
-                <ZoomableImage
+              <div className="relative w-full h-0" style={{ paddingBottom: "75%" }}>
+                <img
                   src={product.photo}
                   alt={product.name}
+                  className="w-full h-full object-contain absolute top-0 left-0"
                 />
               </div>
             </div>
@@ -260,7 +216,7 @@ export default function ProductDetails({ params }) {
           <h2 className="text-xl sm:text-2xl font-bold mb-6 text-green-800">
             Similar Products
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
             {relatedProducts.map((product) => (
               <Card
                 key={product._id}

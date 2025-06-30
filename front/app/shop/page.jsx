@@ -277,7 +277,7 @@ export default function ShopPage() {
       ) : (
         <section className="py-12">
           <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
               {products.map((product) => (
                 <Card key={product._id} className="overflow-hidden">
                   <Link href={`/shop/${product.slug}`}>
@@ -286,7 +286,7 @@ export default function ShopPage() {
                       alt={product.name}
                       width={200}
                       height={200}
-                      className="w-full h-48 object-cover"
+                      className="w-full aspect-square object-cover"
                     />
                   </Link>
                   <CardContent className="p-4">

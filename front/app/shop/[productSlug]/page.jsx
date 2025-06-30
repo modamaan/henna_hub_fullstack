@@ -176,7 +176,7 @@ export default function ProductDetails({ params }) {
                 style={{ paddingBottom: "75%" }}
               >
                 <ZoomableImage
-                  src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/product-photo/${id}`}
+                  src={product.photo}
                   alt={product.name}
                 />
               </div>

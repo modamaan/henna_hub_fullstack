@@ -223,7 +223,7 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white">
-          <nav className="flex flex-col space-y-3 p-4">
+          <nav className="flex flex-col space-y-3 p-4 items-center text-center">
             <Link
               href="/"
               className="text-green-700 hover:text-green-500 transition-colors"

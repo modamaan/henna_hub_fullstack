@@ -110,7 +110,7 @@ export default function ProductsByCategory() {
     <section className="py-16 bg-white">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-green-800 mb-8 text-center">
-          Shop by Category
+          Products
         </h2>
         <Accordion
           type="multiple"
@@ -121,11 +121,11 @@ export default function ProductsByCategory() {
           {categories.map((cat) =>
             grouped[cat.name]?.length ? (
               <AccordionItem key={cat._id} value={cat.name}>
-                <AccordionTrigger className="text-lg font-semibold text-black bg-gray-100 hover:bg-gray-200 px-6 py-4">
+                <AccordionTrigger className="text-lg font-semibold text-black px-6 py-4">
                   {cat.name}
                 </AccordionTrigger>
-                <AccordionContent className="bg-gray-50 mt-1">
-                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <AccordionContent className="mt-1">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                     {grouped[cat.name].map((product) => {
                       const comboCount = getComboCount(product);
                       const discounted = getDiscountedPrice(product);
@@ -139,8 +139,8 @@ export default function ProductsByCategory() {
                               src={product.photo}
                               alt={product.name}
                               width={300}
-                              height={200}
-                              className="w-full h-48 object-cover"
+                              height={300}
+                              className="w-full aspect-square object-cover"
                             />
                           </Link>
                           <CardContent className="p-4 flex-1 flex flex-col">

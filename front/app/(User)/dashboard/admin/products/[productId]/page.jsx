@@ -298,7 +298,7 @@ export default function UpdateProduct({ params }) {
                       {product.photo ? (
                         <div className="flex flex-col items-center w-full h-full">
                           <img
-                            src={URL.createObjectURL(product.photo)}
+                            src={product.photo}
                             alt="Product preview"
                             className="max-w-full max-h-full object-contain" // Ensure the image fits within the container
                           />

@@ -8,13 +8,6 @@ export default function Hero() {
   // const [auth, setAuth] = useAuth()
   return (
     <section className="relative h-[80vh] bg-gradient-to-r from-green-800 to-green-600 overflow-hidden">
-      <Image
-        src="/placeholder.svg?height=800&width=1200"
-        alt="Henna designs"
-        width={1200}
-        height={800}
-        className="absolute inset-0 w-full h-full object-cover mix-blend-overlay"
-      />
       <div className="absolute inset-0 bg-gradient-to-r from-green-900/70 to-green-700/70" />
       <div className="relative container mx-auto px-4 h-full flex flex-col justify-center items-start">
         <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">

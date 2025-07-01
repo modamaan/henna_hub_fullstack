@@ -85,7 +85,7 @@ const CartPage = () => {
     (sum, item) => sum + item.price * (item.quantity || 1),
     0
   );
-  const discount = Math.round(subtotal * 0.2);
+  const discount = 0;
   const deliveryFee = 15;
   const total = subtotal - discount + deliveryFee;
 
@@ -243,9 +243,9 @@ const CartPage = () => {
 
                       <div className="flex justify-between items-center">
                         <span className="text-emerald-700">
-                          Discount (-20%)
+                          Discount
                         </span>
-                        <span className="font-semibold text-red-600">
+                        <span className="font-semibold text-emerald-900">
                           -{formatINR(discount)}
                         </span>
                       </div>

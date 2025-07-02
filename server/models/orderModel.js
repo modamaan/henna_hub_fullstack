@@ -20,6 +20,16 @@ const orderSchema = mongoose.Schema({
         type: String, // Save full address string or pickup note
         required: true
     },
+    deliveryMethod: {
+        type: String,
+        enum: ["DTDC", "POSTAL"],
+        required: true
+    },
+    deliveryFee: {
+        type: Number,
+        required: true,
+        default: 0
+    },
     status: {
         type: String,
         default: "Not Process",

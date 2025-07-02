@@ -26,7 +26,7 @@ export const createOrder = async (req, res) => {
 };
 
 export const verifyPayment = async (req, res) => {
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, cart, userId, shippingAddressOption } = req.body;
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, cart, userId, shippingAddressOption, deliveryMethod, deliveryFee } = req.body;
     const key_secret = process.env.RAZORPAY_KEY_SECRET;
     const generated_signature = crypto
         .createHmac("sha256", key_secret)
@@ -57,6 +57,8 @@ export const verifyPayment = async (req, res) => {
                 },
                 buyer: userId,
                 shippingAddress,
+                deliveryMethod,
+                deliveryFee,
                 status: "Processing"
             });
             await order.save();
@@ -80,6 +82,8 @@ export const verifyPayment = async (req, res) => {
             },
             buyer: userId,
             shippingAddress,
+            deliveryMethod,
+            deliveryFee,
             status: "Cancel"
         });
         await order.save();

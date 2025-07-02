@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import image from "../../images/henna.jpg";
 import image1 from "../../images/henna1.webp";
 import image2 from "../../images/henna2.webp";
-import { Minus, Plus, Trash2, Tag, ShoppingBag, User } from "lucide-react";
+import { Minus, Plus, Trash2, Tag, ShoppingBag, User, Truck, Mail } from "lucide-react";
 import Image from "next/image";
 import { useAuth } from "../context/Auth";
 import RazorpayButton from "../../components/RazorpayButton";
@@ -22,6 +22,8 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 const CartPage = () => {
   const [loading, setLoading] = useState(true);
@@ -29,6 +31,7 @@ const CartPage = () => {
   const [auth, setAuth] = useAuth();
   const [promoCode, setPromoCode] = useState("");
   const [shippingAddressOption, setShippingAddressOption] = useState("current");
+  const [deliveryMethod, setDeliveryMethod] = useState("DTDC");
 
   // Add to cart: ensure quantity is set to 1 if not present
   const addToCart = (product) => {
@@ -86,7 +89,18 @@ const CartPage = () => {
     0
   );
   const discount = 0;
-  const deliveryFee = 15;
+  
+  // Dynamic delivery fee based on method
+  const getDeliveryFee = () => {
+    switch (deliveryMethod) {
+      case "DTDC":
+        return 60; // DTDC delivery fee
+      case "POSTAL":
+        return 50; // Postal delivery fee
+    }
+  };
+  
+  const deliveryFee = getDeliveryFee();
   const total = subtotal - discount + deliveryFee;
 
   // Format currency in INR
@@ -309,12 +323,43 @@ const CartPage = () => {
                       </Select>
                     </div>
 
+                    {/* Delivery Method Selection */}
+                    <div className="mb-6">
+                      <label className="block text-emerald-700 font-medium mb-3">
+                        Delivery Method
+                      </label>
+                      <RadioGroup
+                        value={deliveryMethod}
+                        onValueChange={setDeliveryMethod}
+                        className="space-y-3"
+                      >
+                        <div className="flex items-center space-x-2 p-3 border border-emerald-200 rounded-lg hover:bg-emerald-50 transition-colors">
+                          <RadioGroupItem value="DTDC" id="dtdc" />
+                          <Label htmlFor="dtdc" className="flex items-center gap-2 cursor-pointer">
+                            <Truck className="h-4 w-4 text-emerald-600" />
+                            <span className="font-medium">DTDC Express</span>
+                            <span className="text-sm text-emerald-600">₹60</span>
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2 p-3 border border-emerald-200 rounded-lg hover:bg-emerald-50 transition-colors">
+                          <RadioGroupItem value="POSTAL" id="postal" />
+                          <Label htmlFor="postal" className="flex items-center gap-2 cursor-pointer">
+                            <Mail className="h-4 w-4 text-emerald-600" />
+                            <span className="font-medium">India Post</span>
+                            <span className="text-sm text-emerald-600">₹50</span>
+                          </Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+
                     {/* Checkout Button replaced with RazorpayButton */}
                     <RazorpayButton
                       amount={total}
                       user={auth?.user}
                       cart={cart}
                       shippingAddressOption={shippingAddressOption}
+                      deliveryMethod={deliveryMethod}
+                      deliveryFee={deliveryFee}
                     />
                   </div>
                 </div>

@@ -81,9 +81,9 @@ export function MobileOrderCard({ order, isExpanded, onToggle }) {
         return sum + price * quantity;
       }, 0)
     : 0;
-  const shipping = order.shipping ?? 0;
+  const deliveryFee = order.deliveryFee ?? 0;
   const tax = order.tax ?? 0;
-  const totalAmount = subtotal + shipping + tax;
+  const totalAmount = subtotal + deliveryFee + tax;
 
   const handleStatusChange = async (value) => {
     setSelectedStatus(value);
@@ -254,9 +254,9 @@ export function MobileOrderCard({ order, isExpanded, onToggle }) {
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Shipping:</span>
+                    <span className="text-gray-600">Delivery ({order.deliveryMethod || 'Standard'}):</span>
                     <span className="text-gray-800">
-                      ₹{shipping.toFixed(2)}
+                      ₹{deliveryFee.toFixed(2)}
                     </span>
                   </div>
                   {order.shippingAddress && (

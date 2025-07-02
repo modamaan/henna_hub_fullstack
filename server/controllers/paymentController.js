@@ -38,7 +38,14 @@ export const verifyPayment = async (req, res) => {
     } else {
         // Fetch user address from DB
         const user = await userModel.findById(userId);
-        shippingAddress = user && user.address ? (typeof user.address === 'string' ? user.address : JSON.stringify(user.address)) : "";
+        if (user && user.address && typeof user.address === 'object') {
+            const { street = '', state = '', town = '', pincode = '' } = user.address;
+            shippingAddress = `${street}, ${town}, ${state} - ${pincode}`.replace(/^[,\s]+|[,\s]+$/g, '');
+        } else if (user && typeof user.address === 'string') {
+            shippingAddress = user.address;
+        } else {
+            shippingAddress = "";
+        }
     }
     if (generated_signature === razorpay_signature) {
         // Save order to DB

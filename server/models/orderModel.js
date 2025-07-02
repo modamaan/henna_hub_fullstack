@@ -17,7 +17,7 @@ const orderSchema = mongoose.Schema({
         ref: "User"
     },
     shippingAddress: {
-        type: String, // Save full address string or pickup note
+        type: String, // Formatted from address object (street, state, town, pincode) or pickup note
         required: true
     },
     deliveryMethod: {

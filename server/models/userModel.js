@@ -19,8 +19,10 @@ const userSchema = new mongoose.Schema({
         type:Number,
     },
     address:{
-        type:{},
-        required:true
+        street: { type: String, required: true },
+        state: { type: String, required: true },
+        town: { type: String, required: true },
+        pincode: { type: String, required: true },
     },
     recoveryId:{
         type:String,

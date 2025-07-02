@@ -30,7 +30,10 @@ const ProfilePage = () => {
     email: "",
     password: "",
     phone: "",
-    address: "",
+    street: "",
+    state: "",
+    town: "",
+    pincode: "",
   });
   const [showPassword, setShowPassword] = useState(false);
 
@@ -43,7 +46,10 @@ const ProfilePage = () => {
         email: email || "",
         password: "",
         phone: phone || "",
-        address: address || "",
+        street: address?.street || "",
+        state: address?.state || "",
+        town: address?.town || "",
+        pincode: address?.pincode || "",
       });
     }
   }, [auth?.user]);
@@ -78,7 +84,12 @@ const ProfilePage = () => {
             email: formData.email,
             password: formData.password,
             phone: formData.phone,
-            address: formData.address,
+            address: {
+              street: formData.street,
+              state: formData.state,
+              town: formData.town,
+              pincode: formData.pincode,
+            },
           }
         );
         if (data?.error) {
@@ -198,17 +209,46 @@ const ProfilePage = () => {
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="address">Address</Label>
-                <Textarea
-                  id="address"
-                  name="address"
-                  placeholder="Enter your full address"
-                  value={formData.address}
+                <Label htmlFor="street">Street Address</Label>
+                <Input
+                  id="street"
+                  name="street"
+                  placeholder="123 Main St"
+                  value={formData.street}
                   onChange={handleInputChange}
                 />
-                {errors.address && (
-                  <p className="text-red-500 text-sm">{errors.address}</p>
-                )}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="state">State</Label>
+                  <Input
+                    id="state"
+                    name="state"
+                    placeholder="State"
+                    value={formData.state}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="town">Town/City</Label>
+                  <Input
+                    id="town"
+                    name="town"
+                    placeholder="Town or City"
+                    value={formData.town}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pincode">Pincode</Label>
+                  <Input
+                    id="pincode"
+                    name="pincode"
+                    placeholder="Pincode"
+                    value={formData.pincode}
+                    onChange={handleInputChange}
+                  />
+                </div>
               </div>
 
               <Button type="submit" className="w-full">

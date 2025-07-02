@@ -28,6 +28,16 @@ export const registerController = async (req, res) => {
             }
         }
 
+        // Validate address fields
+        const addressFields = ["street", "state", "town", "pincode"];
+        for (const field of addressFields) {
+            if (!address[field]) {
+                return res.send({
+                    message: `Address ${field.charAt(0).toUpperCase() + field.slice(1)} is required`,
+                });
+            }
+        }
+
         // Check user
         const existingUser = await userModel.findOne({ email });
         // existing user
@@ -167,29 +177,45 @@ export const forgotPasswordController = async (req, res) => {
 //update profile
 export const updateProfileController = async (req, res) => {
     try {
-        const { name, email, password, address, phone } = req.body
-        const user = await userModel.findById(req.user._id)
+        const { name, email, password, address, phone } = req.body;
+        const user = await userModel.findById(req.user._id);
         if (password && password.length < 8) {
-            return res.json({ error: 'Password is required and 8 character long' })
+            return res.json({ error: 'Password is required and 8 character long' });
         }
-        const hashedPassword = password ? await hashPassword(password) : undefined
-        const updatedUser = await userModel.findByIdAndUpdate(req.user._id, {
-            name: name || user.name,
-            password: hashedPassword || user.password,
-            phone: phone || user.password,
-            address: address || user.address
-        }, { new: true })
+        const hashedPassword = password ? await hashPassword(password) : undefined;
+
+        // Merge address fields if address is provided
+        let updatedAddress = user.address;
+        if (address) {
+            updatedAddress = {
+                street: address.street ?? user.address?.street ?? "",
+                state: address.state ?? user.address?.state ?? "",
+                town: address.town ?? user.address?.town ?? "",
+                pincode: address.pincode ?? user.address?.pincode ?? "",
+            };
+        }
+
+        const updatedUser = await userModel.findByIdAndUpdate(
+            req.user._id,
+            {
+                name: name || user.name,
+                password: hashedPassword || user.password,
+                phone: phone || user.phone,
+                address: updatedAddress,
+            },
+            { new: true }
+        );
         res.json({
             success: true,
             message: "Update profile successfully",
-            updatedUser
-        })
+            updatedUser,
+        });
     } catch (error) {
         res.status(404).send({
             success: false,
             message: "Error While Update Profile",
-            error
-        })
+            error,
+        });
     }
 }
 

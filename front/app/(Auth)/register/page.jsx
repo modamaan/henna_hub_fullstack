@@ -29,7 +29,10 @@ export default function RegisterPage() {
     email: "",
     password: "",
     phone: "",
-    address: "",
+    street: "",
+    state: "",
+    town: "",
+    pincode: "",
     recoveryId: "",
   });
 
@@ -53,7 +56,10 @@ export default function RegisterPage() {
     else if (formData.password.length < 8)
       newErrors.password = "Password must be at least 8 characters";
     if (!formData.phone.trim()) newErrors.phone = "Phone number is required";
-    if (!formData.address.trim()) newErrors.address = "Address is required";
+    if (!formData.street.trim()) newErrors.street = "Street is required";
+    if (!formData.state.trim()) newErrors.state = "State is required";
+    if (!formData.town.trim()) newErrors.town = "Town is required";
+    if (!formData.pincode.trim()) newErrors.pincode = "Pincode is required";
     if (!formData.recoveryId.trim())
       newErrors.recoveryId = "Recovery email is required";
     else if (!/\S+@\S+\.\S+/.test(formData.recoveryId))
@@ -76,7 +82,12 @@ export default function RegisterPage() {
             email: formData.email,
             password: formData.password,
             phone: formData.phone,
-            address: formData.address,
+            address: {
+              street: formData.street,
+              state: formData.state,
+              town: formData.town,
+              pincode: formData.pincode,
+            },
             recoveryId: formData.recoveryId,
           }
         );
@@ -194,17 +205,58 @@ export default function RegisterPage() {
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="address">Address</Label>
-                <Textarea
-                  id="address"
-                  name="address"
-                  placeholder="Enter your full address"
-                  value={formData.address}
+                <Label htmlFor="street">Street Address</Label>
+                <Input
+                  id="street"
+                  name="street"
+                  placeholder="123 Main St"
+                  value={formData.street}
                   onChange={handleInputChange}
                 />
-                {errors.address && (
-                  <p className="text-red-500 text-sm">{errors.address}</p>
+                {errors.street && (
+                  <p className="text-red-500 text-sm">{errors.street}</p>
                 )}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="state">State</Label>
+                  <Input
+                    id="state"
+                    name="state"
+                    placeholder="State"
+                    value={formData.state}
+                    onChange={handleInputChange}
+                  />
+                  {errors.state && (
+                    <p className="text-red-500 text-sm">{errors.state}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="town">Town/City</Label>
+                  <Input
+                    id="town"
+                    name="town"
+                    placeholder="Town or City"
+                    value={formData.town}
+                    onChange={handleInputChange}
+                  />
+                  {errors.town && (
+                    <p className="text-red-500 text-sm">{errors.town}</p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="pincode">Pincode</Label>
+                  <Input
+                    id="pincode"
+                    name="pincode"
+                    placeholder="Pincode"
+                    value={formData.pincode}
+                    onChange={handleInputChange}
+                  />
+                  {errors.pincode && (
+                    <p className="text-red-500 text-sm">{errors.pincode}</p>
+                  )}
+                </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="recoveryId">Recovery Email</Label>

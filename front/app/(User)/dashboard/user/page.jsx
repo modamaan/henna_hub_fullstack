@@ -110,7 +110,7 @@ export default function UserDashboard() {
         </header>
 
         <div className="flex-1 flex overflow-hidden">
-           <aside className="hidden lg:block w-64 bg-white shadow-md">
+          <aside className="hidden lg:block w-64 bg-white shadow-md">
             <SidebarContent />
           </aside>
           {/* Main Content */}
@@ -160,7 +160,14 @@ export default function UserDashboard() {
                         Address
                       </p>
                       <p className="text-lg text-gray-900">
-                        {auth?.user?.address}
+                        {[
+                          auth?.user?.address?.street,
+                          auth?.user?.address?.town,
+                          auth?.user?.address?.state,
+                          auth?.user?.address?.pincode,
+                        ]
+                          .filter(Boolean)
+                          .join(", ")}
                       </p>
                     </div>
                   </div>

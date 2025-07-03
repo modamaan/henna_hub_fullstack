@@ -40,9 +40,11 @@ export const verifyPayment = async (req, res) => {
         const user = await userModel.findById(userId);
         if (user && user.address && typeof user.address === 'object') {
             const { street = '', state = '', town = '', pincode = '' } = user.address;
-            shippingAddress = `${street}, ${town}, ${state} - ${pincode}`.replace(/^[,\s]+|[,\s]+$/g, '');
+            const phone = user.phone || '';
+            shippingAddress = `${street}, ${town}, ${state} - ${pincode} (Phone: ${phone})`.replace(/^[,\s]+|[,\s]+$/g, '');
         } else if (user && typeof user.address === 'string') {
-            shippingAddress = user.address;
+            const phone = user.phone || '';
+            shippingAddress = `${user.address} (Phone: ${phone})`;
         } else {
             shippingAddress = "";
         }

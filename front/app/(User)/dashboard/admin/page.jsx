@@ -176,7 +176,12 @@ export default function Dashboard() {
                         Address
                       </p>
                       <p className="text-lg text-gray-900">
-                        {auth?.user?.address}
+                        {[
+                          auth?.user?.address?.street,
+                          auth?.user?.address?.town,
+                          auth?.user?.address?.state,
+                          auth?.user?.address?.pincode
+                        ].filter(Boolean).join(", ")}
                       </p>
                     </div>
                   </div>

@@ -264,6 +264,7 @@ export const orderStatusController = async (req, res) => {
         // Send email to customer if status is 'Shipped'
         if (status === "Shipped" && order && order.buyer && order.buyer.email) {
             try {
+                console.log("Sending shipped email to:", order.buyer.email);
                 await resend.emails.send({
                     from: "Henna Shop <onboarding@resend.dev>",
                     to: order.buyer.email,

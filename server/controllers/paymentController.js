@@ -4,7 +4,7 @@ import Razorpay from "razorpay";
 import crypto from "crypto";
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
-import Resend from "resend";
+import { Resend } from "resend";
 
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,

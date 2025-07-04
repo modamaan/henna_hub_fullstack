@@ -79,7 +79,7 @@ export const verifyPayment = async (req, res) => {
             try {
                 const adminEmail = process.env.ADMIN_EMAIL;
                 const productList = cart.map(i => `- ${i.name || i.title || i._id || i.id} (Qty: ${i.quantity})`).join("<br>");
-                await resend.emails.send({
+                const mailResult = await resend.emails.send({
                     from: `Henna Shop <no-reply@henna.com>`,
                     to: adminEmail,
                     subject: `New Order Placed (#${order._id})`,
@@ -92,6 +92,7 @@ export const verifyPayment = async (req, res) => {
                         <p><b>Status:</b> Processing</p>
                         <p><b>Products:</b><br>${productList}</p>`
                 });
+                console.log("Resend mail result:", mailResult);
             } catch (mailErr) {
                 console.error("Failed to send admin order email:", mailErr);
             }

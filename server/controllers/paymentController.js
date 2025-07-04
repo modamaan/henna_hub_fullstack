@@ -35,12 +35,15 @@ export const verifyPayment = async (req, res) => {
         .createHmac("sha256", key_secret)
         .update(razorpay_order_id + "|" + razorpay_payment_id)
         .digest("hex");
+
+    // Always fetch user at the start
+    const user = await userModel.findById(userId);
+
     let shippingAddress = "";
     if (shippingAddressOption === "pickup") {
         shippingAddress = "Pick up from store";
     } else {
-        // Fetch user address from DB
-        const user = await userModel.findById(userId);
+        // Use user for address
         if (user && user.address && typeof user.address === 'object') {
             const { street = '', state = '', town = '', pincode = '' } = user.address;
             const phone = user.phone || '';

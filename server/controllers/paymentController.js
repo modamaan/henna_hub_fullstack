@@ -79,13 +79,15 @@ export const verifyPayment = async (req, res) => {
             try {
                 const adminEmail = process.env.ADMIN_EMAIL;
                 const productList = cart.map(i => `- ${i.name || i.title || i._id || i.id} (Qty: ${i.quantity})`).join("<br>");
+                const buyerName = user?.name || userId;
+                const buyerEmail = user?.email || '';
                 const mailResult = await resend.emails.send({
                     from: "Henna Shop <onboarding@resend.dev>",
                     to: adminEmail,
                     subject: `New Order Placed (#${order._id})`,
                     html: `<h2>New Order Placed</h2>
                         <p><b>Order ID:</b> ${order._id}</p>
-                        <p><b>Buyer:</b> ${userId}</p>
+                        <p><b>Buyer:</b> ${buyerName} (${buyerEmail})</p>
                         <p><b>Shipping Address:</b> ${shippingAddress}</p>
                         <p><b>Delivery Method:</b> ${deliveryMethod}</p>
                         <p><b>Delivery Fee:</b> ${deliveryFee}</p>

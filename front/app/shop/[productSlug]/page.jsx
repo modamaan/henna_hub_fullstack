@@ -15,6 +15,7 @@ import henna1 from "../../../public/images/henna1.webp";
 import henna2 from "../../../public/images/henna2.webp";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
+import { useToast } from "@/hooks/use-toast";
 
 export default function ProductDetails({ params }) {
   const [quantity, setQuantity] = useState(1);
@@ -34,6 +35,7 @@ export default function ProductDetails({ params }) {
   const [shipping, setShipping] = useState("");
   const [id, setId] = useState("");
   const router = useRouter();
+  const { toast } = useToast();
 
   // console.log("related products", relatedProducts);
 
@@ -51,6 +53,7 @@ export default function ProductDetails({ params }) {
 
       if (existingItem) {
         // If the product is already in the cart, increment only its quantity
+        toast({ title: `${product.name} added to cart!` });
         return prevCart.map(
           (item) =>
             item._id === product._id
@@ -59,6 +62,7 @@ export default function ProductDetails({ params }) {
         );
       }
       // If the product is not in the cart, add it with a quantity of 1
+      toast({ title: `${product.name} added to cart!` });
       return [...prevCart, { ...product, quantity: 1 }];
     });
   };

@@ -205,11 +205,11 @@ export default function Navbar() {
           {/* Cart Button */}
           <Button
             variant="outline"
-            className="hidden md:inline-flex"
+            className="inline-flex"
             onClick={() => router.push("/cart")}
           >
             <ShoppingCart className="mr-2 h-4 w-4" />
-            Cart ({cart.length})
+           ({cart.length})
           </Button>
         </div>
         <Button

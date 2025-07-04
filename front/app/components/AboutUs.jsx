@@ -1,6 +1,6 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import henna from '../../images/henna.jpg'
+import henna from '../../public/images/henna.jpg'
 
 export default function AboutUs() {
   return (

@@ -1,7 +1,7 @@
 
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import henna1 from '../../images/henna1.webp'
+import henna1 from '../../public/images/henna1.webp'
 // import { useAuth } from "../context/Auth"
 
 export default function Hero() {

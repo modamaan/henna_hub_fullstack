@@ -10,9 +10,9 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { useCart } from "../../context/Cart";
 import { Label } from "@/components/ui/label";
-import henna from "../../../images/henna.jpg";
-import henna1 from "../../../images/henna1.webp";
-import henna2 from "../../../images/henna2.webp";
+import henna from "../../../public/images/henna.jpg";
+import henna1 from "../../../public/images/henna1.webp";
+import henna2 from "../../../public/images/henna2.webp";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 

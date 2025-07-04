@@ -53,6 +53,7 @@ export default function CreateProduct() {
     offer: "",
     shipping: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -91,8 +92,18 @@ export default function CreateProduct() {
     getAllCategory();
   }, []);
 
+  // Helper to check if required fields are filled
+  const isFormValid =
+    product.name &&
+    product.description &&
+    product.price &&
+    product.quantity &&
+    product.photo &&
+    product.category;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     console.log("Product to be created:", product);
     // Here you would typically send the data to your backend
     const {
@@ -119,6 +130,7 @@ export default function CreateProduct() {
         title: errorMessage,
         variant: "destructive",
       });
+      setIsSubmitting(false);
       return;
     }
 
@@ -127,6 +139,7 @@ export default function CreateProduct() {
         title: "Photo should be less than 10MB",
         variant: "destructive",
       });
+      setIsSubmitting(false);
       return;
     }
 
@@ -154,8 +167,8 @@ export default function CreateProduct() {
           title: data.message,
           variant: "success",
         });
-        // Redirect to products page after successful creation
         setTimeout(() => {
+          setIsSubmitting(false);
           router.push("/dashboard/admin/products");
         }, 2000);
       } else {
@@ -163,6 +176,7 @@ export default function CreateProduct() {
           title: "Product Created Successfully",
           variant: "success",
         });
+        setIsSubmitting(false);
         router.push("/dashboard/admin/products");
       }
     } catch (error) {
@@ -171,6 +185,7 @@ export default function CreateProduct() {
         title: "Something went wrong",
         variant: "destructive",
       });
+      setIsSubmitting(false);
     }
   };
 
@@ -386,8 +401,9 @@ export default function CreateProduct() {
                     <Button
                       type="submit"
                       className="w-full bg-green-600 hover:bg-green-700 text-white"
+                      disabled={!isFormValid || isSubmitting}
                     >
-                      Create Product
+                      {isSubmitting ? "Creating..." : "Create Product"}
                     </Button>
                   </form>
                 </CardContent>

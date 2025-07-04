@@ -1,9 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-
+import env from "dotenv";
+env.config();
 import { comparePassword, hashPassword } from "../helpers/authHelper.js";
 import JWT from "jsonwebtoken";
 import userModel from "../models/userModel.js";
 import orderModel from "../models/orderModel.js";
+import { Resend } from "resend";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const registerController = async (req, res) => {
     try {
@@ -255,8 +259,30 @@ export const orderStatusController = async (req, res) => {
     try {
         const { orderId } = req.params
         const { status } = req.body
-        const orders = await orderModel.findByIdAndUpdate(orderId, { status }, { new: true })
-        res.json(orders)
+        const order = await orderModel.findByIdAndUpdate(orderId, { status }, { new: true }).populate("buyer", "name email");
+
+        // Send email to customer if status is 'Shipped'
+        if (status === "Shipped" && order && order.buyer && order.buyer.email) {
+            try {
+                await resend.emails.send({
+                    from: "Henna Shop <onboarding@resend.dev>",
+                    to: order.buyer.email,
+                    subject: `Your Order #${order._id} Has Shipped!`,
+                    html: `<h2>Your Order Has Shipped</h2>
+                        <p>Hi ${order.buyer.name},</p>
+                        <p>Your order <b>#${order._id}</b> has been shipped and is on its way!</p>
+                        <p><b>Shipping Address:</b> ${order.shippingAddress}</p>
+                        <p><b>Delivery Method:</b> ${order.deliveryMethod}</p>
+                        <p><b>Delivery Fee:</b> ${order.deliveryFee}</p>
+                        <p><b>Status:</b> Shipped</p>
+                        <p>Thank you for shopping with us!</p>`
+                });
+            } catch (mailErr) {
+                console.error("Failed to send shipped email to customer:", mailErr);
+            }
+        }
+
+        res.json(order)
     } catch (error) {
         res.status(500).send({
             success: false,

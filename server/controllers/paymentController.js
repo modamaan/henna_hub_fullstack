@@ -97,7 +97,6 @@ export const verifyPayment = async (req, res) => {
                         <p><b>Status:</b> Processing</p>
                         <p><b>Products:</b><br>${productList}</p>`
                 });
-                console.log("Resend mail result:", mailResult);
             } catch (mailErr) {
                 console.error("Failed to send admin order email:", mailErr);
             }

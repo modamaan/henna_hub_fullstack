@@ -80,7 +80,7 @@ export const verifyPayment = async (req, res) => {
                 const adminEmail = process.env.ADMIN_EMAIL;
                 const productList = cart.map(i => `- ${i.name || i.title || i._id || i.id} (Qty: ${i.quantity})`).join("<br>");
                 const mailResult = await resend.emails.send({
-                    from: `Henna Shop <no-reply@henna.com>`,
+                    from: "Henna Shop <onboarding@resend.dev>",
                     to: adminEmail,
                     subject: `New Order Placed (#${order._id})`,
                     html: `<h2>New Order Placed</h2>

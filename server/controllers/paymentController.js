@@ -4,11 +4,14 @@ import Razorpay from "razorpay";
 import crypto from "crypto";
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
+import Resend from "resend";
 
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
     key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const createOrder = async (req, res) => {
     try {
@@ -71,6 +74,28 @@ export const verifyPayment = async (req, res) => {
                 status: "Processing"
             });
             await order.save();
+
+            // Send email to admin
+            try {
+                const adminEmail = process.env.ADMIN_EMAIL;
+                const productList = cart.map(i => `- ${i.name || i.title || i._id || i.id} (Qty: ${i.quantity})`).join("<br>");
+                await resend.emails.send({
+                    from: `Henna Shop <no-reply@henna.com>`,
+                    to: adminEmail,
+                    subject: `New Order Placed (#${order._id})`,
+                    html: `<h2>New Order Placed</h2>
+                        <p><b>Order ID:</b> ${order._id}</p>
+                        <p><b>Buyer:</b> ${userId}</p>
+                        <p><b>Shipping Address:</b> ${shippingAddress}</p>
+                        <p><b>Delivery Method:</b> ${deliveryMethod}</p>
+                        <p><b>Delivery Fee:</b> ${deliveryFee}</p>
+                        <p><b>Status:</b> Processing</p>
+                        <p><b>Products:</b><br>${productList}</p>`
+                });
+            } catch (mailErr) {
+                console.error("Failed to send admin order email:", mailErr);
+            }
+
             return res.json({ success: true, message: "Payment verified and order saved!" });
         } catch (err) {
             return res.status(500).json({ success: false, message: "Order save failed" });

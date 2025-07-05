@@ -237,18 +237,6 @@ export default function Navbar() {
             >
               Shop
             </Link>
-            <Link
-              href="/about"
-              className="text-green-700 hover:text-green-500 transition-colors"
-            >
-              About
-            </Link>
-            <Link
-              href="/contact"
-              className="text-green-700 hover:text-green-500 transition-colors"
-            >
-              Contact
-            </Link>
 
             {!auth.user ? (
               <>

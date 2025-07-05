@@ -321,12 +321,12 @@ const CartPage = () => {
                         value={shippingAddressOption}
                         onValueChange={setShippingAddressOption}
                       >
-                        <SelectTrigger className="w-full border border-emerald-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                          <SelectValue placeholder="Select shipping address" />
+                        <SelectTrigger className="w-full border border-emerald-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 min-h-[44px]">
+                          <SelectValue placeholder="Select shipping address" className="text-sm sm:text-base" />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="current">Current Address</SelectItem>
-                          <SelectItem value="pickup">(FREE) Pick up from KERALA FOOD STUFF or 2km around perumbilavu</SelectItem>
+                        <SelectContent className="max-w-[calc(100vw-2rem)] sm:max-w-none">
+                          <SelectItem value="current" className="text-sm sm:text-base">Current Address</SelectItem>
+                          <SelectItem value="pickup" className="text-sm sm:text-base whitespace-normal break-words">(FREE) Pick up from KERALA FOOD STUFF or 2km around perumbilavu</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

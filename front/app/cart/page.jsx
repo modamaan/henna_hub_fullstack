@@ -90,13 +90,21 @@ const CartPage = () => {
   );
   const discount = 0;
   
-  // Dynamic delivery fee based on method
+  // Dynamic delivery fee based on method and shipping option
   const getDeliveryFee = () => {
+    // If pickup is selected, delivery fee is 0
+    if (shippingAddressOption === "pickup") {
+      return 0;
+    }
+    
+    // Otherwise, calculate based on delivery method
     switch (deliveryMethod) {
       case "DTDC":
         return 60; // DTDC delivery fee
       case "POSTAL":
         return 50; // Postal delivery fee
+      default:
+        return 60; // Default to DTDC fee
     }
   };
   
@@ -318,39 +326,41 @@ const CartPage = () => {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="current">Current Address</SelectItem>
-                          <SelectItem value="pickup">Pick up from store</SelectItem>
+                          <SelectItem value="pickup">(FREE) Pick up from KERALA FOOD STUFF or 2km around perumbilavu</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
-                    {/* Delivery Method Selection */}
-                    <div className="mb-6">
-                      <label className="block text-emerald-700 font-medium mb-3">
-                        Delivery Method
-                      </label>
-                      <RadioGroup
-                        value={deliveryMethod}
-                        onValueChange={setDeliveryMethod}
-                        className="space-y-3"
-                      >
-                        <div className="flex items-center space-x-2 p-3 border border-emerald-200 rounded-lg hover:bg-emerald-50 transition-colors">
-                          <RadioGroupItem value="DTDC" id="dtdc" />
-                          <Label htmlFor="dtdc" className="flex items-center gap-2 cursor-pointer">
-                            <Truck className="h-4 w-4 text-emerald-600" />
-                            <span className="font-medium">DTDC Express</span>
-                            <span className="text-sm text-emerald-600">₹60</span>
-                          </Label>
-                        </div>
-                        <div className="flex items-center space-x-2 p-3 border border-emerald-200 rounded-lg hover:bg-emerald-50 transition-colors">
-                          <RadioGroupItem value="POSTAL" id="postal" />
-                          <Label htmlFor="postal" className="flex items-center gap-2 cursor-pointer">
-                            <Mail className="h-4 w-4 text-emerald-600" />
-                            <span className="font-medium">India Post</span>
-                            <span className="text-sm text-emerald-600">₹50</span>
-                          </Label>
-                        </div>
-                      </RadioGroup>
-                    </div>
+                    {/* Delivery Method Selection - Only show if not pickup */}
+                    {shippingAddressOption !== "pickup" && (
+                      <div className="mb-6">
+                        <label className="block text-emerald-700 font-medium mb-3">
+                          Delivery Method
+                        </label>
+                        <RadioGroup
+                          value={deliveryMethod}
+                          onValueChange={setDeliveryMethod}
+                          className="space-y-3"
+                        >
+                          <div className="flex items-center space-x-2 p-3 border border-emerald-200 rounded-lg hover:bg-emerald-50 transition-colors">
+                            <RadioGroupItem value="DTDC" id="dtdc" />
+                            <Label htmlFor="dtdc" className="flex items-center gap-2 cursor-pointer">
+                              <Truck className="h-4 w-4 text-emerald-600" />
+                              <span className="font-medium">DTDC Express</span>
+                              <span className="text-sm text-emerald-600">₹60</span>
+                            </Label>
+                          </div>
+                          <div className="flex items-center space-x-2 p-3 border border-emerald-200 rounded-lg hover:bg-emerald-50 transition-colors">
+                            <RadioGroupItem value="POSTAL" id="postal" />
+                            <Label htmlFor="postal" className="flex items-center gap-2 cursor-pointer">
+                              <Mail className="h-4 w-4 text-emerald-600" />
+                              <span className="font-medium">India Post</span>
+                              <span className="text-sm text-emerald-600">₹50</span>
+                            </Label>
+                          </div>
+                        </RadioGroup>
+                      </div>
+                    )}
 
                     {/* Checkout Button replaced with RazorpayButton */}
                     <RazorpayButton

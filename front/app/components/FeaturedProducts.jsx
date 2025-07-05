@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
+import { Loader2 } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -18,6 +19,9 @@ export default function ProductsByCategory() {
   const [products, setProducts] = useState([]);
   const [grouped, setGrouped] = useState({});
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [productsLoading, setProductsLoading] = useState(true);
   const { toast } = useToast();
   const [cart, setCart] = useCart();
   // Add state for controlled Accordion
@@ -26,6 +30,7 @@ export default function ProductsByCategory() {
   // Fetch categories dynamically from backend
   useEffect(() => {
     const getAllCategory = async () => {
+      setCategoriesLoading(true);
       try {
         const { data } = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/category/get-category`
@@ -38,6 +43,8 @@ export default function ProductsByCategory() {
           title: "Something went wrong when getting categories",
           variant: "destructive",
         });
+      } finally {
+        setCategoriesLoading(false);
       }
     };
     getAllCategory();
@@ -45,6 +52,7 @@ export default function ProductsByCategory() {
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setProductsLoading(true);
       try {
         const { data } = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/product/get-product`
@@ -52,6 +60,8 @@ export default function ProductsByCategory() {
         setProducts(data?.products || []);
       } catch (error) {
         toast({ title: "Failed to load products", variant: "destructive" });
+      } finally {
+        setProductsLoading(false);
       }
     };
     fetchProducts();
@@ -67,6 +77,11 @@ export default function ProductsByCategory() {
     });
     setGrouped(groupedByCat);
   }, [products]);
+
+  // Update overall loading state
+  useEffect(() => {
+    setLoading(categoriesLoading || productsLoading);
+  }, [categoriesLoading, productsLoading]);
 
   // Update openCategories when categories or grouped changes
   useEffect(() => {
@@ -112,78 +127,85 @@ export default function ProductsByCategory() {
         <h2 className="text-3xl font-bold text-green-800 mb-8 text-center">
           Products
         </h2>
-        <Accordion
-          type="multiple"
-          value={openCategories}
-          onValueChange={setOpenCategories}
-          className="w-full"
-        >
-          {categories.map((cat) =>
-            grouped[cat.name]?.length ? (
-              <AccordionItem key={cat._id} value={cat.name}>
-                <AccordionTrigger className="text-lg font-semibold text-black px-6 py-4">
-                  {cat.name}
-                </AccordionTrigger>
-                <AccordionContent className="mt-1">
-                  <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                    {grouped[cat.name].map((product) => {
-                      const comboCount = getComboCount(product);
-                      const discounted = getDiscountedPrice(product);
-                      return (
-                        <Card
-                          key={product._id}
-                          className="overflow-hidden transition-shadow hover:shadow-lg flex flex-col"
-                        >
-                          <Link href={`/shop/${product.slug}`}>
-                            <Image
-                              src={product.photo}
-                              alt={product.name}
-                              width={300}
-                              height={300}
-                              className="w-full aspect-square object-cover"
-                            />
-                          </Link>
-                          <CardContent className="p-4 flex-1 flex flex-col">
-                            <h3 className="font-semibold text-lg mb-1">
-                              {product.name}
-                            </h3>
-                            {comboCount && (
-                              <p className="text-sm text-gray-500 mb-1">
-                                Combo: {comboCount}
-                              </p>
-                            )}
-                            <div className="mb-4">
-                              {discounted ? (
-                                <>
-                                  <span className="text-green-700 font-bold text-lg mr-2">
-                                    ₹{discounted.toFixed(2)}
-                                  </span>
-                                  <span className="line-through text-gray-400 text-base">
+        
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-green-600 mb-4" />
+          </div>
+        ) : (
+          <Accordion
+            type="multiple"
+            value={openCategories}
+            onValueChange={setOpenCategories}
+            className="w-full"
+          >
+            {categories.map((cat) =>
+              grouped[cat.name]?.length ? (
+                <AccordionItem key={cat._id} value={cat.name}>
+                  <AccordionTrigger className="text-lg font-semibold text-black px-6 py-4">
+                    {cat.name}
+                  </AccordionTrigger>
+                  <AccordionContent className="mt-1">
+                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                      {grouped[cat.name].map((product) => {
+                        const comboCount = getComboCount(product);
+                        const discounted = getDiscountedPrice(product);
+                        return (
+                          <Card
+                            key={product._id}
+                            className="overflow-hidden transition-shadow hover:shadow-lg flex flex-col"
+                          >
+                            <Link href={`/shop/${product.slug}`}>
+                              <Image
+                                src={product.photo}
+                                alt={product.name}
+                                width={300}
+                                height={300}
+                                className="w-full aspect-square object-cover"
+                              />
+                            </Link>
+                            <CardContent className="p-4 flex-1 flex flex-col">
+                              <h3 className="font-semibold text-lg mb-1">
+                                {product.name}
+                              </h3>
+                              {comboCount && (
+                                <p className="text-sm text-gray-500 mb-1">
+                                  Combo: {comboCount}
+                                </p>
+                              )}
+                              <div className="mb-4">
+                                {discounted ? (
+                                  <>
+                                    <span className="text-green-700 font-bold text-lg mr-2">
+                                      ₹{discounted.toFixed(2)}
+                                    </span>
+                                    <span className="line-through text-gray-400 text-base">
+                                      ₹{product.price.toFixed(2)}
+                                    </span>
+                                  </>
+                                ) : (
+                                  <span className="text-green-700 font-bold text-lg">
                                     ₹{product.price.toFixed(2)}
                                   </span>
-                                </>
-                              ) : (
-                                <span className="text-green-700 font-bold text-lg">
-                                  ₹{product.price.toFixed(2)}
-                                </span>
-                              )}
-                            </div>
-                            <Button
-                              className="w-full bg-green-600 hover:bg-green-700 text-white mt-auto"
-                              onClick={() => addToCart(product)}
-                            >
-                              Add to Cart
-                            </Button>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                </AccordionContent>
-              </AccordionItem>
-            ) : null
-          )}
-        </Accordion>
+                                )}
+                              </div>
+                              <Button
+                                className="w-full bg-green-600 hover:bg-green-700 text-white mt-auto"
+                                onClick={() => addToCart(product)}
+                              >
+                                Add to Cart
+                              </Button>
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ) : null
+            )}
+          </Accordion>
+        )}
       </div>
     </section>
   );

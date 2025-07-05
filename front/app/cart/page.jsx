@@ -93,7 +93,7 @@ const CartPage = () => {
   // Dynamic delivery fee based on method and shipping option
   const getDeliveryFee = () => {
     // If pickup is selected, delivery fee is 0
-    if (shippingAddressOption === "pickup") {
+    if (shippingAddressOption === "pickup-kerala" || shippingAddressOption === "pickup-perumbilavu") {
       return 0;
     }
     
@@ -326,13 +326,14 @@ const CartPage = () => {
                         </SelectTrigger>
                         <SelectContent className="max-w-[calc(100vw-2rem)] sm:max-w-none z-50">
                           <SelectItem value="current" className="text-sm sm:text-base">Current Address</SelectItem>
-                          <SelectItem value="pickup" className="text-sm sm:text-base whitespace-normal break-words">(FREE) Pick up from KERALA FOOD STUFF or 2km around perumbilavu</SelectItem>
+                          <SelectItem value="pickup-kerala" className="text-sm sm:text-base">(FREE) Pick up from KERALA FOOD STUFF</SelectItem>
+                          <SelectItem value="pickup-perumbilavu" className="text-sm sm:text-base">(FREE) 2km around perumbilavu</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
                     {/* Delivery Method Selection - Only show if not pickup */}
-                    {shippingAddressOption !== "pickup" && (
+                    {shippingAddressOption !== "pickup-kerala" && shippingAddressOption !== "pickup-perumbilavu" && (
                       <div className="mb-6">
                         <label className="block text-emerald-700 font-medium mb-3">
                           Delivery Method

@@ -40,10 +40,10 @@ export const verifyPayment = async (req, res) => {
     const user = await userModel.findById(userId);
 
     let shippingAddress = "";
-    if (shippingAddressOption === "pickup") {
-        shippingAddress = "Pick up from store";
+    if (shippingAddressOption === "pickup-kerala") {
+        shippingAddress = "Pick up from KERALA FOOD STUFF";
     } else {
-        // Use user for address
+        // Use user for address (current address and pickup-perumbilavu options)
         if (user && user.address && typeof user.address === 'object') {
             const { street = '', state = '', town = '', pincode = '' } = user.address;
             const phone = user.phone || '';

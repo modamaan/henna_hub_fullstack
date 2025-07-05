@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { LogOut, Menu, User, X } from "lucide-react";
+import { LogOut, Menu, User, X, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -179,6 +179,7 @@ export default function Navbar() {
                 <Button variant="outline" className="hidden md:inline-flex">
                   <User className="mr-2 h-4 w-4" />
                   {auth?.user?.name || "Account"}
+                  <ChevronDown className="ml-2 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
@@ -268,6 +269,7 @@ export default function Navbar() {
                   <Button variant="outline" className="w-full justify-center">
                     <User className="mr-2 h-4 w-4" />
                     {auth?.user?.name || "Account"}
+                    <ChevronDown className="ml-2 h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>

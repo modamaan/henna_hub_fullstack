@@ -85,7 +85,7 @@ export const verifyPayment = async (req, res) => {
                 const buyerName = user?.name || userId;
                 const buyerEmail = user?.email || '';
                 const mailResult = await resend.emails.send({
-                    from: "Henna Shop <onboarding@resend.dev>",
+                    from: "Henna Shop <onboarding@hennahub.shop>",
                     to: adminEmail,
                     subject: `New Order Placed (#${order._id})`,
                     html: `<h2>New Order Placed</h2>

@@ -266,7 +266,7 @@ export const orderStatusController = async (req, res) => {
             try {
                 console.log("Sending shipped email to:", order.buyer.email);
                 await resend.emails.send({
-                    from: "Henna Shop <onboarding@resend.dev>",
+                    from: "Henna Shop <onboarding@hennahub.shop>",
                     to: order.buyer.email,
                     subject: `Your Order #${order._id} Has Shipped!`,
                     html: `<h2>Your Order Has Shipped</h2>

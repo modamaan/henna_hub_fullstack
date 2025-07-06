@@ -36,9 +36,11 @@ import { useToast } from "@/hooks/use-toast";
 import Image from "next/image";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
+import { useAuth } from "@/app/context/Auth";
 
 export default function AdminTestimonials() {
   const { toast } = useToast();
+  const [auth] = useAuth();
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedTestimonial, setSelectedTestimonial] = useState(null);
@@ -53,7 +55,7 @@ export default function AdminTestimonials() {
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/testimonial/all`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("auth")}`,
+            Authorization: `Bearer ${auth.token}`,
           },
         }
       );
@@ -78,7 +80,7 @@ export default function AdminTestimonials() {
         {},
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("auth")}`,
+            Authorization: `Bearer ${auth.token}`,
           },
         }
       );
@@ -103,7 +105,7 @@ export default function AdminTestimonials() {
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/testimonial/delete/${id}`,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("auth")}`,
+            Authorization: `Bearer ${auth.token}`,
           },
         }
       );

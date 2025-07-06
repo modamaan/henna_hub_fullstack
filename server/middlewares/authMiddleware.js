@@ -4,10 +4,13 @@ import userModel from '../models/userModel.js';
 //Protected Routes token base
 export const requireSignIn = async (req, res, next) => {
     try {
-        const decoded = JWT.verify(
-            req.headers.authorization,
-            process.env.JWT_SECRET
-        );
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ error: 'Authorization header missing or invalid' });
+        }
+        
+        const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+        const decoded = JWT.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
         next();
     } catch (error) {

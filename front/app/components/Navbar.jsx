@@ -215,8 +215,7 @@ export default function Navbar() {
             className="inline-flex"
             onClick={() => router.push("/cart")}
           >
-            <ShoppingCart className="mr-2 h-4 w-4" />
-           ({cart.length})
+            <ShoppingCart className="mr-2 h-4 w-4" />({cart.length})
           </Button>
         </div>
         <Button
@@ -242,6 +241,12 @@ export default function Navbar() {
               className="text-green-700 hover:text-green-500 transition-colors"
             >
               Shop
+            </Link>
+            <Link
+              href="about"
+              className="text-green-700 hover:text-green-500 transition-colors"
+            >
+              About
             </Link>
             <Link
               href="/testimonial"

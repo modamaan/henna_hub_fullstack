@@ -1,20 +1,35 @@
 {
-  "name": "Henna Hub",
+  "name": "HennaHub - Premium Organic Henna Products Online India",
   "short_name": "HennaHub",
+  "description": "Buy pure and natural henna products online at HennaHub. Premium organic henna powder, mehndi cones, and natural hair dye. Fast delivery across India.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#fff",
-  "theme_color": "#fff",
+  "background_color": "#166534",
+  "theme_color": "#166534",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["shopping", "beauty", "health"],
   "icons": [
     {
-      "src": "./images/favicon-9_imresizer192.png",
+      "src": "/images/favicon-9_imresizer192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-        "src": "./images/favicon-9_imresizer512.png",
-        "sizes": "512x512",
-        "type": "image/png"
+      "src": "/images/favicon-9_imresizer512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/images/henna1.webp",
+      "sizes": "1280x720",
+      "type": "image/webp",
+      "form_factor": "wide"
     }
   ]
 } 

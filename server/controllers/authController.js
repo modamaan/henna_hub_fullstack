@@ -264,15 +264,19 @@ export const orderStatusController = async (req, res) => {
         // Send email to customer if status is 'Shipped'
         if (status === "Shipped" && order && order.buyer && order.buyer.email) {
             try {
-                console.log("Sending shipped email to:", order.buyer.email);
+                const customerEmail = order.buyer.email;
+                const customerName = order.buyer.name;
+                const orderId = order._id;
+                
+                console.log("Sending shipped email to:", customerEmail);
                 await resend.emails.send({
-                    from: "HennaHub Shop <orders@hennahub.shop>",
-                    replyTo: "support@hennahub.shop",
-                    to: order.buyer.email,
-                    subject: `Your Order #${order._id} Has Shipped!`,
+                    from: "HennaHub Shop <hello@hennahub.shop>",
+                    replyTo: "hello@hennahub.shop",
+                    to: customerEmail,
+                    subject: `Your Order #${orderId} Has Shipped!`,
                     html: `<h2>Your Order Has Shipped</h2>
-                        <p>Hi ${order.buyer.name},</p>
-                        <p>Your order <b>#${order._id}</b> has been shipped and is on its way!</p>
+                        <p>Hi ${customerName},</p>
+                        <p>Your order <b>#${orderId}</b> has been shipped and is on its way!</p>
                         <p><b>Shipping Address:</b> ${order.shippingAddress}</p>
                         <p><b>Delivery Method:</b> ${order.deliveryMethod}</p>
                         <p><b>Delivery Fee:</b> ${order.deliveryFee}</p>

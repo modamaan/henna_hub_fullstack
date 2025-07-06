@@ -161,6 +161,12 @@ export default function Navbar() {
           >
             Contact
           </Link>
+          <Link
+            href="/testimonial"
+            className="text-green-700 hover:text-green-500 transition-colors"
+          >
+            Share Experience
+          </Link>
         </nav>
         {/* new  */}
         <div className="flex gap-4">
@@ -236,6 +242,12 @@ export default function Navbar() {
               className="text-green-700 hover:text-green-500 transition-colors"
             >
               Shop
+            </Link>
+            <Link
+              href="/testimonial"
+              className="text-green-700 hover:text-green-500 transition-colors"
+            >
+              Share Experience
             </Link>
 
             {!auth.user ? (

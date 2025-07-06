@@ -72,6 +72,12 @@ export default function Dashboard() {
       icon: ShoppingBag,
       href: "/products",
     },
+    {
+      id: "testimonials",
+      label: "Testimonials",
+      icon: Gem,
+      href: "/testimonials",
+    },
   ];
 
   const SidebarContent = () => (

@@ -267,6 +267,7 @@ export const orderStatusController = async (req, res) => {
                 console.log("Sending shipped email to:", order.buyer.email);
                 await resend.emails.send({
                     from: "HennaHub Shop <orders@hennahub.shop>",
+                    replyTo: "support@hennahub.shop",
                     to: order.buyer.email,
                     subject: `Your Order #${order._id} Has Shipped!`,
                     html: `<h2>Your Order Has Shipped</h2>
@@ -276,7 +277,12 @@ export const orderStatusController = async (req, res) => {
                         <p><b>Delivery Method:</b> ${order.deliveryMethod}</p>
                         <p><b>Delivery Fee:</b> ${order.deliveryFee}</p>
                         <p><b>Status:</b> Shipped</p>
-                        <p>Thank you for shopping with us!</p>`
+                        <p>Thank you for shopping with us!</p>`,
+                    headers: {
+                        'X-Priority': '1',
+                        'X-MSMail-Priority': 'High',
+                        'Importance': 'high'
+                    }
                 });
             } catch (mailErr) {
                 console.error("Failed to send shipped email to customer:", mailErr);

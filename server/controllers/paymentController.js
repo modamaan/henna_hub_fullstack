@@ -86,6 +86,7 @@ export const verifyPayment = async (req, res) => {
                 const buyerEmail = user?.email || '';
                 const mailResult = await resend.emails.send({
                     from: "HennaHub Shop <orders@hennahub.shop>",
+                    replyTo: "support@hennahub.shop",
                     to: adminEmail,
                     subject: `New Order Placed (#${order._id})`,
                     html: `<h2>New Order Placed</h2>
@@ -95,7 +96,12 @@ export const verifyPayment = async (req, res) => {
                         <p><b>Delivery Method:</b> ${deliveryMethod}</p>
                         <p><b>Delivery Fee:</b> ${deliveryFee}</p>
                         <p><b>Status:</b> Processing</p>
-                        <p><b>Products:</b><br>${productList}</p>`
+                        <p><b>Products:</b><br>${productList}</p>`,
+                    headers: {
+                        'X-Priority': '1',
+                        'X-MSMail-Priority': 'High',
+                        'Importance': 'high'
+                    }
                 });
             } catch (mailErr) {
                 console.error("Failed to send admin order email:", mailErr);
